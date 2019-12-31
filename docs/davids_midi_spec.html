@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0065)https://www.cs.cmu.edu/~music/cmsip/readings/davids-midi-spec.htm -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><title>David's MIDI Spec</title>
+
+<meta content="MSHTML 6.00.2800.1515" name="GENERATOR"></head>
+<body bgcolor="#ffffe0"><a href="http://www.srm.com/qtma/index.html"><img src="./davids_midi_spec_files/qtma.gif" border="2"></a> <!--.. created April 1994-->
+<center>
+<p>
+</p><h1>David's MIDI Spec</h1></center>
+<h6>revised 12 August 1992 - added Examples at end <br>revised 24 April 1995 - 
+minor additions to program change &amp; controller explanations </h6>
+<hr>
+
+<h4>The official MIDI Spec is tricky and hard to read. I have distilled it here 
+for your reading pleasure. -- David Van Brink</h4>
+<hr>
+
+<center>
+<h2>The MIDI Specification</h2></center>
+<p><b>Serial Protocol</b><br>31250 (± 1%) baud asynchronous, with 1 start bit, 8 
+data bits, and one stop bit. Thus, each data byte takes 10 serial bits, and is 
+sent in 320 microseconds. The connection is a 1.5 mA current loop, and the 
+receiver is opto-isolated, and requires less than 5mA to turn on. Logical 0 is 
+current "on." Rise and fall times must be less than 2 microseconds. 
+</p><p><b>The MIDI Bus</b><br>The MIDI bus is designed to address 16 channels. More 
+than this would seriously tax the bandwidth of the bus at 31.25 kbaud. Each 
+device on the bus may receive on one or more channels. Sometimes, multiple 
+devices may receive on the same channel, with various desired or undesired 
+side-effects. The channels are numbered 1 to 16, and, at the low command level, 
+are addressed as 0 to 15. 
+</p><p>The MIDI bus operates in a one-way fashion; generally a computer and MIDI 
+setup looks like this. 
+</p><p>
+</p><center><img src="./davids_midi_spec_files/DMSfig1.gif" border="2"></center>
+<p>Each wire is one-way. The computer, therefore, receives no information from 
+the two sound modules. 
+</p><p><b>Message Formats</b><br>Messages consist of a byte stream. Bytes with the 
+high-bit set establish some kind of mode and are called "status bytes." Bytes 
+with the high-bit clear are data bytes within the most recently established 
+mode. Using the same status byte for multiple data messages is referred to as 
+"running status." Some status bytes are directed to a particular channel. In the 
+chart below, the letter 'c' is used to represent a channel nibble in a status 
+byte. 
+</p><p>
+</p><center><img src="./davids_midi_spec_files/DMStable1.gif" border="2"></center>
+<p><b><i>Note On, Note Off</i></b><br>The pitch is in the range 0 to 127, where 
+Middle C is pitch number 60. Values outside the range of the instrument, or the 
+particular sound, are octave-shifted into range. The "velocity" is how quickly, 
+or hard, the key was struck. A velocity of zero in a note-on event is a note-off 
+event. A velocity of 64 is "average," and a keyboard that cannot sense velocity 
+should report a velocity of 64 for each keypress. 
+</p><p><b><i>Key Pressure, Channel Pressure</i></b><br>Some keyboards can detect a 
+change in pressure on each key, while they are held by the player; these 
+keyboards can report "key pressure" over MIDI. Some keyboards may sense the 
+overall pressure on the device, such as with a weight sensor beneath the entire 
+keyboard. These devices can report "channel pressure." 
+</p><p><b><i>Controller Change</i></b><br>Various sliders, buttons, and knobs on 
+MIDI keyboards are referred to as "controllers." On sound modules, some of the 
+attributes which can be changed in real-time are called "controllers." 
+Controllers are numbered from 0 to 121, and some of them have defined purposes. 
+The values 122-127 are reserved in the controller-change message for special 
+mode messages. 
+</p><p>
+</p><center><img src="./davids_midi_spec_files/DMStable2.gif" border="2"></center>
+<p>Note that "MSB" and "LSB" refer to 7-bit values. 
+</p><p><b><i>Program Change</i></b><br>A sound module may switch easily between as 
+many as 128 different programmed sounds, numbered 0 to 127. 
+</p><p>Many synthesizers support more than 128 programmed sounds by means of a "bank 
+select" command. Older synths have typically used a device-specific system 
+exclusive (see below) command. Newer synths use controllers 0 and 32 to select a 
+bank. Unfortunately, there is no standard for whether it is, in fact, controller 
+0 or 32, or both, and if both, must be sent first. 
+</p><p><b><i>Pitch Bend</i></b><br>The pitch bend wheel is also a continuous 
+controller on many MIDI keyboards. Possibly, the Pitch Bend message is in its 
+own category because it is something likely to be done frequently. The two bytes 
+of the pitch bend message form a 14 bit number, 0 to 16383. The value 8192 
+(sent, LSB first, as 0x00 0x40), is centered, or "no pitch bend." The value 0 
+(0x00 0x00) means, "bend as low as possible," and, similarly, 16383 (0x7F 0x7F) 
+is to "bend as high as possible." The exact range of the pitch bend is specific 
+to the synthesizer. 
+</p><p><b><i>System Exclusive, End of SysEx</i></b><br>A System Exclusive message, 
+or "SysEx," is a message that is vendor, or synthesizer, specific. The first one 
+or three data bytes of the sysex specifies the vendor. (Originally, it was only 
+one byte, but now the value "0" is used as an escapement to reach the next two.) 
+The sysex type message may legally occur at any time, including in the middle of 
+other kinds of messages. 
+</p><p>A sysex message may look like this: 0xF0 vendorID data ... 0xF7. Many vendors 
+have their own format for what follows the vendor ID, specifying synthesizer 
+number, or message length, and so on. 
+</p><p><b><i>Song Position, Song Select</i></b><br>The Song Position message tells 
+all MIDI sequencers on the MIDI bus where to start playing when a Start Song 
+message is received. This time is specified in "Timing Ticks." The Song Select 
+message specifies which song number to play at that time. 
+</p><p><b><i>Unofficial Bus Select</i></b><br>Some vendors have produced boxes with 
+a single MIDI input, and multiple MIDI outputs. The Bus Select message specifies 
+which of the outputs further data should be sent to. This is not an official 
+message; the vendors in question should have used a SysEx command. 
+</p><p><b><i>Tune Request</i></b><br>Possibly obsolete in the age of digital 
+synthesizers... supposed to tell the synthesizer to retune its oscillators. 
+</p><p><b><i>Timing Tick</i></b><br>Tells all sequencers on the MIDI bus to advance 
+by a single "tick." 
+</p><p><b><i>Start Song, Continue Song, Stop Song</i></b><br>Tells all sequencers on 
+the MIDI bus to start, continue, or stop playing. 
+</p><p><b><i>Active Sensing</i></b><br>If a MIDI device receives an Active Sensing 
+message, then it should enter "active sensing mode." In that mode, if no 
+messages are received for 300 milliseconds, then it should silence all sound 
+output. The Active Sensing byte itself is a valid message to inhibit this 
+silencing. This helps make sure that a "hung" MIDI system automatically silences 
+itself. 
+</p><p><b><i>System Reset</i></b><br>This message commands a device to return to its 
+initial, powerup state. 
+</p><hr>
+
+<center>
+<h2>Examples</h2></center>
+<p><b>A Simple MIDI Stream</b><br>The following hexadecimal bytes are a simple, 
+typical stream of MIDI data. Each message must be sent at the real-time that the 
+synthesizer is supposed to perform the action. Sophisticated sequencers will 
+send the message slightly ahead of time to account for the duration of the 
+message -- one third of a millisecond per byte -- and the response time of the 
+particular synthesizer -- perhaps several milliseconds. The perceptual 
+improvement of accuracy under 5 or 10 milliseconds, to the untrained listener, 
+is questionable. 
+</p><p><b><i>90 3C 40 </i></b><br>Play middle C (note number 60, hexadecimal 3C) on 
+channel 1 (the zero nibble of 90), at half the full velocity (velocity 64, 
+hexadecimal 40). 
+</p><p><b><i>43 40 </i></b><br>Play note G above middle C (note number 67, 
+hexadecimal 43) at velocity 64. Note that the status byte of 90 from the first 
+message is still in effect, and did not have to be resent. 
+</p><p><b><i>B9 07 33 </i></b><br>Change the volume of MIDI channel 10 to 51 
+(hexadecimal 33). The MIDI volume controller number is 7. 
+</p><p><b><i>B3 07 10 </i></b><br>Change the volume of MIDI channel 4 to 16 
+(hexadecimal 10). Since the channel number is different than the previous 
+message, running status could not be used. 
+</p><p><b><i>90 3C 00 </i></b><br>Stop playing middle C on channel 1. The last byte 
+of zero indicates a "key down velocity of 0" which indicates a "note-off" event. 
+
+</p><p><b><i>80 43 64 </i></b><br>Stop playing the G above middle C (key number 67, 
+hexadecimal 43). The key is released with a velocity of 64. Since very few, if 
+any, synthesizers implement an interpretation of the note-off volume, this 
+message is generally equivalent to 90 43 00. 
+</p><p>
+</p><hr>
+
+<h6>April 1994 - 11:16.AM (typo fixed 23 Jan 2017)</h6>
+</body></html>

@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1577833600 source:c:\users\pc\desktop\c-midi-writer\endian.c
+	<stdint.h>
+	<stdio.h>
+
+1577833182 source:c:\users\pc\desktop\c-midi-writer\main.c
+	<stdio.h>
+
