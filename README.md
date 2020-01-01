@@ -6,3 +6,8 @@ The objective is to write a tiny C library that will allow me to generate simple
 
 More resources here:
 https://philjonas.github.io/c-midi-writer/
+
+## TO DO:
+* write functions that break up the char array
+* automate repetitive parts
+* rewrite Python helpers in C

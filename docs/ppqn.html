@@ -1,0 +1,112 @@
+
+<!-- saved from url=(0051)http://midi.teragonaudio.com/tech/midifile/ppqn.htm -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><title>MIDI File Format: Tempo and Timebase</title></head><body text="BLACK" bgcolor="WHITE" link="RED" vlink="PURPLE" alink="PURPLE"><font size="4">
+
+The MIDI file format's <a href="http://midi.teragonaudio.com/tech/midifile/tempo.htm">Tempo Meta-Event</a> expresses tempo as "the amount of time
+(ie, microseconds) per quarter note". For example, if a Tempo Meta-Event contains the 3 bytes of 07 A1 20,
+then each quarter note should be 0x07A120 (or 500,000) microseconds long.
+
+<hr size="5" noshade=""><p></p><center><font color="RED"><b>BPM</b></font></center>
+
+<p>Normally, musicians express tempo as "the amount of quarter notes in every minute (ie, time period)". This is the opposite
+of the way that the MIDI file format expresses it.
+
+</p><p>When musicians refer to a "beat" in terms of tempo, they are referring to a quarter note (ie, a quarter note is always 1
+beat when talking about tempo, regardless of the time signature. Yes, it's a bit confusing to non-musicians that the
+time signature's "beat" may not be the same thing as the tempo's "beat" -- it won't be unless the time signature's beat also
+happens to be a quarter note. But that's the traditional definition of BPM tempo). To a musician, tempo is therefore always
+"how many quarter notes happen during every minute". Musicians refer to this measurement as BPM (ie, Beats Per Minute). So a
+tempo of 100 BPM means that a musician must be able to play 100 steady quarter notes, one right after the other, in one
+minute. That's how "fast" the "musical tempo" is at 100 BPM. It's very important that you understand the concept of how a
+musician expresses "musical tempo" (ie, BPM) in order to properly present tempo settings to a musician, and yet be able to
+relate it to how the MIDI file format expresses tempo.
+
+</p><p>To convert the Tempo Meta-Event's tempo (ie, the 3 bytes that specify the amount of microseconds per quarter note) to
+BPM:
+
+</p><p>BPM = 60,000,000/(tt tt tt)
+
+</p><p>For example, a tempo of 120 BPM = 07 A1 20 microseconds per quarter note.
+
+</p><p>So why does the MIDI file format use "time per quarter note" instead of "quarter notes per time" to specify its tempo?
+Well, its easier to specify more precise tempos with the former. With BPM, sometimes you have to deal with fractional tempos
+(for example, 100.3 BPM) if you want to allow a finer resolution to the tempo. Using microseconds to express tempo offers
+plenty of resolution.
+
+</p><p>Also, SMPTE is a time-based protocol (ie, it's based upon seconds, minutes, and hours, rather than a musical tempo).
+Therefore it's easier to relate the MIDI file's tempo to SMPTE timing if you express it as microseconds. Many musical
+devices now use SMPTE to sync their playback.
+
+</p><hr size="5" noshade=""><p></p><center><font color="RED"><b>PPQN Clock</b></font></center>
+
+<p>A sequencer typically uses some internal hardware timer counting off steady time (ie, microseconds perhaps) to generate a
+software "PPQN clock" that counts off the timebase (Division) "ticks". In this way, the time upon which an event occurs can
+be expressed to the musician in terms of a musical bar:beat:PPQN-tick rather than how many microseconds from the start of the
+playback. Remember that musicians always think in terms of a beat, not the passage of seconds, minutes, etc.
+
+</p><p>As mentioned, the microsecond tempo value tells you how long each one of your sequencer's "quarter notes" should be. From
+here, you can figure out how long each one of your sequencer's PPQN clocks should be by dividing that microsecond value by
+your MIDI file's <a href="http://midi.teragonaudio.com/tech/midifile/mthd.htm">Division</a>. For example, if your MIDI file's Division is 96 PPQN, then that means that each of your
+sequencer's PPQN clock ticks at the above tempo should be 500,000 / 96 (or 5,208.3) microseconds long (ie, there should be
+5,208.3 microseconds inbetween each PPQN clock tick in order to yield a tempo of 120 BPM at 96 PPQN. And there should
+always be 96 of these clock ticks in each quarter note, 48 ticks in each eighth note, 24 ticks in each sixteenth, etc).
+
+</p><p>Note that you can have any timebase at any tempo. For example, you can have a 96 PPQN file playing at
+100 BPM just as you can have a 192 PPQN file playing at 100 BPM. You can also have a 96 PPQN file playing at either 100
+BPM or 120 BPM. Timebase and tempo are two entirely separate quantities. Of course, they both are needed when you setup your
+hardware timer (ie, when you set how many microseconds are in each PPQN tick). And of course, at slower tempos, your
+PPQN clock tick is going to be longer than at faster tempos.
+
+</p><hr size="5" noshade=""><p></p><center><font color="RED"><b>MIDI Clock</b></font></center>
+
+<p>MIDI clock bytes are sent over MIDI, in order to sync the playback of 2 devices (ie, one device is generating MIDI clocks at
+its current tempo which it internally counts off, and the other device is syncing its playback to the receipt of these
+bytes). Unlike with SMPTE frames, MIDI clock bytes are sent at a rate related to the musical tempo.
+
+</p><p>Since there are 24 MIDI Clocks in every quarter note, the length of a MIDI Clock (ie, time inbetween each MIDI
+Clock message) is the microsecond tempo divided by 24. In the above example, that would be 500,000/24, or 20,833.3
+microseconds in every MIDI Clock. Alternately, you can relate this to your timebase (ie, PPQN clock). If you have 96 PPQN,
+then that means that a MIDI Clock byte must occur every 96 / 24 (ie, 4) PPQN clocks.
+
+</p><hr size="5" noshade=""><p></p><center><font color="RED"><b>SMPTE</b></font></center>
+
+<p>SMPTE counts off the passage of time in terms of seconds, minutes, and hours (ie, the way that non-musicians count time).
+It also breaks down the seconds into smaller units called "frames". The movie industry created SMPTE, and they adopted 4
+different frame rates. You can divide a second into 24, 25, 29, or 30 frames. Later on, even finer resolution was needed by
+musical devices, and so each frame was broken down into "subframes".
+
+</p><p>So, SMPTE is not directly related to musical tempo. SMPTE time doesn't vary with "musical tempo".
+
+</p><p>Many devices use SMPTE to sync their playback. If you need to sychronize with such a device, then you may need to deal
+with SMPTE timing. Of course, you're probably still going to have to maintain some sort of PPQN clock, based upon the
+passing SMPTE subframes, so that the user can adjust the tempo of the playback in terms of BPM, and can consider the time
+of each event in terms of bar:beat:tick. But since SMPTE doesn't directly relate to musical tempo, you have to interpolate
+(ie, calculate) your PPQN clocks from the passing of subframes/frames/seconds/minutes/hours (just as we previously
+calculated the PPQN clock from a hardware timer counting off microseconds).
+
+</p><p>Let's take the easy example of 25 Frames and 40 SubFrames. As previously mentioned in the discussion of Division, this
+is analogous to millisecond based timing because you have 1,000 SMPTE subframes per second. (You have 25 frames per
+second. Each second is divided up into 40 subframes, and you therefore have 25 * 40 subframes per second. And remember that
+1,000 milliseconds are also in every second). Every millisecond therefore means that another subframe has passed (and vice
+versa). Every time you count off 40 subframes, a SMPTE frame has passed (and vice versa). Etc.
+
+</p><p>Let's assume you desire 96 PPQN and a tempo of 500,000 microseconds. Considering that with 25-40
+Frame-SubFrame SMPTE timing 1 millisecond = 1 subframe (and remember that 1 millisecond = 1,000 microseconds), there
+should be 500,000 / 1,000 (ie, 500) subframes per quarter note. Since you have 96 PPQN in every quarter note, then every
+PPQN ends up being 500 / 96 subframes long, or 5.2083 milliseconds (ie, there's how we end up with that 5,208.3 microseconds
+PPQN clock tick just as we did above in discussing PPQN clock). And since 1 millisecond = 1 subframe, every PPQN clock
+tick also equals 5.2083 subframes at the above tempo and timebase.
+
+</p><hr size="5" noshade=""><p></p><center><font color="RED"><b>Formulas</b></font></center>
+
+</font><p><font size="4">BPM = 60,000,000/MicroTempo
+<br>MicrosPerPPQN = MicroTempo/TimeBase
+<br>MicrosPerMIDIClock = MicroTempo/24
+<br>PPQNPerMIDIClock = TimeBase/24
+<br>MicrosPerSubFrame = 1000000 * Frames * SubFrames
+<br>SubFramesPerQuarterNote = MicroTempo/(Frames * SubFrames)
+<br>SubFramesPerPPQN = SubFramesPerQuarterNote/TimeBase
+<br>MicrosPerPPQN = SubFramesPerPPQN * Frames * SubFrames
+
+</font>
+</p></body></html>
