@@ -7,5 +7,5 @@ def pretty_print(s):
 
 
 if __name__ == "__main__":
-    # print(pretty_print('00 FF 58 04 04 02 18 08'))
+    print(pretty_print('00 FF 58 04 04 02 18 08'))
     print(pretty_print('00 FF 51 03 07 A1 20'))
