@@ -38,6 +38,11 @@
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="midi_example.h" />
+		<Unit filename="midi_writer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="midi_writer.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

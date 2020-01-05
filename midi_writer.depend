@@ -1,11 +1,21 @@
 # depslib dependency file v1.0
-1577833600 source:c:\users\pc\desktop\c-midi-writer\endian.c
+1578138649 source:c:\users\pc\desktop\c-midi-writer\endian.c
 	<stdint.h>
 	<stdio.h>
 
-1577888148 source:c:\users\pc\desktop\c-midi-writer\main.c
+1578216134 source:c:\users\pc\desktop\c-midi-writer\main.c
 	<stdio.h>
 	"endian.h"
+	"midi_example.h"
+	"midi_writer.h"
 
-1577833324 c:\users\pc\desktop\c-midi-writer\endian.h
+1578139434 c:\users\pc\desktop\c-midi-writer\endian.h
+
+1578146181 c:\users\pc\desktop\c-midi-writer\midi_example.h
+
+1578216122 c:\users\pc\desktop\c-midi-writer\midi_writer.h
+
+1578215925 source:c:\users\pc\desktop\c-midi-writer\midi_writer.c
+	<stdint.h>
+	<stdio.h>
 

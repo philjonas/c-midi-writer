@@ -12,5 +12,7 @@ void test_endian()
   {
     printf("%02x ", (unsigned int)pointer[i]);
   }
-  puts("");
+  puts("\n");
+
+  printf("Size of char: %d \n", sizeof(char));
 }
