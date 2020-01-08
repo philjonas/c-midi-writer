@@ -39,10 +39,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="midi_example.h" />
-		<Unit filename="midi_writer.c">
+		<Unit filename="write_midi.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="midi_writer.h" />
+		<Unit filename="write_midi.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

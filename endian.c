@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-// example from https://en.wikipedia.org/wiki/Endianness
+// example taken from https://en.wikipedia.org/wiki/Endianness
 
 void test_endian()
 {
