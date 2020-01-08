@@ -9,5 +9,5 @@
 int main()
 {
     test_endian();
-    write_midi("c42.mid", midi_hex, ARRAY_LENGTH(midi_hex));
+    return write_midi("c42.mid", midi_hex, ARRAY_LENGTH(midi_hex));
 }
