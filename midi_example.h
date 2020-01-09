@@ -1,7 +1,7 @@
 #ifndef MIDI_EXAMPLE
 #define MIDI_EXAMPLE
 
-static const unsigned char midi_hex[] = {
+static const unsigned char MIDI_ANNOTATED_HEX[] = {
     /* MIDI header */
     0x4d, 0x54, 0x68, 0x64, // MIDI header "MThd"
     0x00, 0x00, 0x00, 0x06, // Chunk length

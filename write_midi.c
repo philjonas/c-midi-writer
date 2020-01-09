@@ -1,7 +1,9 @@
 #include <stdint.h>
 #include <stdio.h>
 
-int write_midi(const char *filename, unsigned char midi_hex[], size_t midi_length)
+#include "write_midi.h"
+
+int write_midi(const char *filename, const unsigned char hex_array[], size_t midi_length)
 {
 
     FILE *fp = fopen(filename, "wb");
@@ -11,7 +13,7 @@ int write_midi(const char *filename, unsigned char midi_hex[], size_t midi_lengt
         return 1;
     }
 
-    fwrite(midi_hex, midi_length, sizeof(char), fp);
+    fwrite(hex_array, midi_length, sizeof(char), fp);
     fclose(fp);
 
     return 0;

@@ -1,6 +1,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#include "endian.h"
+
 // example taken from https://en.wikipedia.org/wiki/Endianness
 
 void test_endian()
