@@ -1,13 +1,11 @@
 #include <stdio.h>
 
 #include "utils.h"
-#include "endian.h"
 #include "midi_example.h"
 #include "write_midi.h"
 
 int main()
 {
-    // test_endian();
     test_array_concat();
     test_long_to_char_array();
 

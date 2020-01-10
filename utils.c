@@ -42,14 +42,11 @@ void test_long_to_char_array()
 
 int test_array_concat(void)
 {
-    const int a[] = {1, 1, 1, 1};
-    const int b[] = {2, 2, 2, 2};
-    unsigned int i;
+    char *total = ARRAY_CONCAT(char, "1234", 4, "5678", 4);
+    char end_str[] = {'\0'};
+    char *total2 = ARRAY_CONCAT(char, total, 8, end_str, 1);
 
-    int *total = ARRAY_CONCAT(int, a, 4, b, 4);
-
-    for (i = 0; i < 8; i++)
-        printf("%d\n", total[i]);
+    printf("%s\n", total2);
 
     free(total);
     return 0;

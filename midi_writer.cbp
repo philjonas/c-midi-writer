@@ -31,10 +31,6 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="endian.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="endian.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
