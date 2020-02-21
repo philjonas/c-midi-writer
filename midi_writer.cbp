@@ -31,10 +31,18 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="chunk_writer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="chunk_writer.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="midi_example.h" />
+		<Unit filename="tests.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="tests.h" />
 		<Unit filename="utils.c">
 			<Option compilerVar="CC" />
 		</Unit>

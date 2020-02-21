@@ -1,6 +1,8 @@
 #ifndef UTILS_PHIL
 #define UTILS_PHIL
 
+#include <stddef.h>
+
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
@@ -21,5 +23,7 @@ void *array_concat(const void *, size_t, const void *, size_t, size_t);
 void *long_to_char_array(unsigned long int, unsigned int);
 
 unsigned long int get_bpm_in_milisecs(unsigned int);
+
+int bound_int(int, int, int);
 
 #endif

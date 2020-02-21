@@ -34,4 +34,4 @@ static const unsigned char MIDI_ANNOTATED_HEX[] = {
     0x00, 0xff, 0x2f, 0x00 // End of track
 };
 
-#endif
+#endif // MIDI_EXAMPLE

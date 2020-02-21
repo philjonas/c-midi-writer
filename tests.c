@@ -1,8 +1,9 @@
-// #include <stdlib.h>
-// #include <stdio.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "utils.h"
+#include "chunk_writer.h"
 
 void test_long_to_char_array()
 {
@@ -41,4 +42,39 @@ void test_curiosities()
 
     // slicing byte "23" out of "1234"
     printf("%x\n", (0x1234 >> 4) & 0xff);
+}
+
+void test_write_midi()
+{
+    int tracks = 2;
+    Chunk header;
+    writeHeaderTrack(&header, tracks);
+
+    int i = 0;
+    int end = header.size;
+
+    printf("BPM 20 = %d\n", get_bpm_in_milisecs(20));
+    printf("BPM 200 = %d\n", get_bpm_in_milisecs(200));
+
+    printf("HEADER\n");
+    while (i < end)
+    {
+        unsigned char* pt = header.chunk_ptr + i;
+        unsigned char pv = *pt;
+        printf("%02x\n", pv);
+        ++i;
+    }
+
+    Chunk tempo;
+    writeTempoTrack(&tempo, 120, 4, 2);
+
+    i = 0;
+    end = tempo.size;
+
+    printf("TEMPO\n");
+    while (i < end)
+    {
+        printf("%02x\n", tempo.chunk_ptr[i]);
+        ++i;
+    }
 }

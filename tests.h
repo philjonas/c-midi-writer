@@ -7,4 +7,6 @@ void test_long_to_char_array();
 
 void test_curiosities();
 
+void test_write_midi();
+
 #endif
