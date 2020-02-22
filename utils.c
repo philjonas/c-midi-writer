@@ -28,10 +28,3 @@ unsigned long int get_bpm_in_milisecs(unsigned int bpm)
 {
     return SIXTY_MILLION / bpm;
 }
-
-int bound_int(int val, int min, int max)
-{
-    val = MAX(val, min);
-    val = MIN(val, max);
-    return val;
-}

@@ -8,7 +8,7 @@ void writeHeaderTrack(Chunk *header, unsigned int numberOfTracks)
     ;
 
     // numberOfTracks must be between 1 and 16
-    numberOfTracks = (unsigned int)bound_int(numberOfTracks, 1, 16);
+    numberOfTracks = (unsigned int)CLAMP(numberOfTracks, 1, 16);
 
     unsigned char headerBytes[] = {
         /* MIDI header */
@@ -34,11 +34,11 @@ void writeTempoTrack(Chunk *tempoTrk, unsigned int bpm,
                      unsigned int nBts, unsigned int bTyp)
 {
     // Beats per Minute
-    bpm = (unsigned int)bound_int(bpm, 20, 200);
+    bpm = (unsigned int)CLAMP(bpm, 20, 200);
     // Number of Beats
-    nBts = (unsigned int)bound_int(nBts, 1, 16);
+    nBts = (unsigned int)CLAMP(nBts, 1, 16);
     // Type of Beat
-    bTyp = (unsigned int)bound_int(bTyp, 1, 16);
+    bTyp = (unsigned int)CLAMP(bTyp, 1, 16);
 
     // tempo = nBts / 2 ** bTyp
     // 4/4 = 4 / 2 ** 2
