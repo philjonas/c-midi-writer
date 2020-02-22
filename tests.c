@@ -10,9 +10,7 @@ void test_long_to_char_array()
     unsigned int array_len = 4;
     unsigned int bpm = 120;
     unsigned long int bpm_ms = get_bpm_in_milisecs(bpm);
-    unsigned char *pdest;
-
-    pdest = long_to_char_array(bpm_ms, array_len);
+    unsigned char *pdest = long_to_char_array(bpm_ms, array_len);
 
     printf("0: %x\n", pdest[0]);
     printf("1: %x\n", pdest[1]);
@@ -59,9 +57,7 @@ void test_write_midi()
     printf("HEADER\n");
     while (i < end)
     {
-        unsigned char* pt = header.chunk_ptr + i;
-        unsigned char pv = *pt;
-        printf("%02x\n", pv);
+        printf("%02x\n", header.chunk_ptr[i]);
         ++i;
     }
 

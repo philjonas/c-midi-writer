@@ -10,9 +10,7 @@
 #define ARRAY_LENGTH(array) (sizeof((array)) / sizeof((array)[0]))
 
 #define BYTE_IN_BITS 8
-
 #define BYTE_MASK 0xff
-
 #define SIXTY_MILLION 60000000
 
 #define ARRAY_CONCAT(TYPE, A, An, B, Bn) \
