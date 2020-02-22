@@ -1,7 +1,7 @@
 #ifndef TESTS_PHIL
 #define TESTS_PHIL
 
-int test_array_concat(void);
+void test_array_concat();
 
 void test_long_to_char_array();
 

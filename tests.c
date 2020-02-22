@@ -17,9 +17,11 @@ void test_long_to_char_array()
     printf("2: %x\n", pdest[2]);
     printf("3: %x\n", pdest[3]);
     printf("Decimal: %d, Hexadecimal: %x BPM:%d\n", (int)bpm_ms, (unsigned int)bpm_ms, (int)bpm);
+
+    free(pdest);
 }
 
-int test_array_concat(void)
+void test_array_concat(void)
 {
     char *total = ARRAY_CONCAT(char, "1234", 4, "5678", 4);
     char end_str[] = {'\0'};
@@ -28,7 +30,7 @@ int test_array_concat(void)
     printf("%s\n", total2);
 
     free(total);
-    return 0;
+    free(total2);
 }
 
 void test_curiosities()
@@ -40,6 +42,9 @@ void test_curiosities()
 
     // slicing byte "23" out of "1234"
     printf("%x\n", (0x1234 >> 4) & 0xff);
+
+    printf("BPM 20 = %d\n", get_bpm_in_milisecs(20));
+    printf("BPM 200 = %d\n", get_bpm_in_milisecs(200));
 }
 
 void test_write_midi()
@@ -50,9 +55,6 @@ void test_write_midi()
 
     int i = 0;
     int end = header.size;
-
-    printf("BPM 20 = %d\n", get_bpm_in_milisecs(20));
-    printf("BPM 200 = %d\n", get_bpm_in_milisecs(200));
 
     printf("HEADER\n");
     while (i < end)
@@ -73,4 +75,7 @@ void test_write_midi()
         printf("%02x\n", tempo.chunk_ptr[i]);
         ++i;
     }
+
+    free(header.chunk_ptr);
+    free(tempo.chunk_ptr);
 }

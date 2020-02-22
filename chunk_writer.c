@@ -15,7 +15,7 @@ void writeHeaderTrack(Chunk *header, unsigned int numberOfTracks)
         0x4d, 0x54, 0x68, 0x64, // MIDI header "MThd"
         0x00, 0x00, 0x00, 0x06, // Chunk length
         0x00, 0x01,             // format MIDI 1
-        0x00, numberOfTracks,   // 2 tracks
+        0x00, numberOfTracks,   // number of instrumental tracks
         0x00, 0x78,             // 120 ticks per quarter-note
     };
 
