@@ -7,7 +7,7 @@
 
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
 
-#define CLAMP(x, y, z) (((x) > (z)) ? (x) : ((x) < (y) ? (y) : (x)))
+#define CLAMP(x, y, z) (((x) > (z)) ? (z) : ((x) < (y) ? (y) : (x)))
 
 #define ARRAY_LENGTH(array) (sizeof((array)) / sizeof((array)[0]))
 
