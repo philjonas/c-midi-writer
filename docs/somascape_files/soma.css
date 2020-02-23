@@ -1,0 +1,524 @@
+/****************************************
+
+ StyleSheet
+
+ Site:   somascape.org
+ File:   soma.css
+
+ Date:   28 Oct 2017
+
+----------------------------------------
+
+ Contents
+
+	Media queries
+	Overloaded html - General
+	Overloaded html - Links
+	Overloaded html - Lists
+	General styling
+	Layout - General
+	Layout - Header/footer
+	Layout - App pages
+	Table - soma-unframed
+	Table - soma-framed
+	Table - soma-cframed
+	Table - soma-cmframed
+	Table - soma-tablenotes
+	Table - soma-appinfo
+	jQuery/Bootstrap over-rides
+
+****************************************/
+
+/* --- Media queries --- */
+
+/* Phone */
+.app-content .soma-title { text-align: center; }
+/*.soma-nav-title { text-align: center; }*/
+
+/* Phone-Tablet transition (768px) */
+@media all and (min-width: 48em) {
+	.app-content .soma-title { text-align: left; }
+}
+
+/* Tablet-Medium transition (992px) */
+
+/* Medium-Large transition (1200px) */
+
+/* --- Overloaded html - General --- */
+
+body {
+	font-family:		'Open Sans', 'Helvetica Neue', san-serif;
+	color:			#707070;
+	background-color:	#f9f9f7;
+	padding-top:		50px;
+	margin-bottom:		42px;
+}
+
+p {
+	margin:			12px 0;
+}
+
+h1 {
+	color:			#b8b8f8;
+	margin-bottom:		20px;
+}
+h2, h3 {
+	color:			#e80;
+	font-weight:		300;
+	margin-bottom:		16px;
+}
+h4 {
+	color:			#e80;
+	font-size:		19px;
+	font-weight:		300;
+	margin-top:		20px;
+	margin-bottom:		12px;
+}
+
+/* --- Overloaded html - Links --- */
+
+a {
+	color:			#95c;
+	text-decoration:	none;
+}
+a:visited {
+	color:			#95c;
+}
+a:hover {
+	color:			#d50;
+	text-decoration:	none;
+}
+
+.upto {
+	margin:			20px 0 0 0;
+	font-family:		Arial, sans-serif;
+	font-size:		11px;
+}
+.upto a:link, .upto a:visited {
+	padding-left:		24px;
+	background:		url("../images/up.png") left top no-repeat;
+	text-decoration:	none;
+}
+.upto a:hover, .upto a:active {
+	background-position:	0 -20px;
+}
+
+.ringtag {
+	float:			right;
+	width:			128px;
+	height:			42px;
+	margin-top:		20px;
+	font-size:		11px;
+}
+.ringtag a:link, .ringtag a:visited {
+	display:		block;
+	padding:		12px 0 14px 18px;
+	background:		url("../images/ringtagc.png") right top no-repeat;
+}
+.ringtag a:hover, .ringtag a:active {
+	background-position:	right -53px;
+}
+
+/* --- Overloaded html - Lists --- */
+
+ul.soma-pagecontents, ol.soma-pagecontents {
+	font-size:		15px;
+	color:			#e73;
+}
+ul.soma-pagecontents ul {
+	font-size:		14px;
+}
+ul.soma-pagecontents ul ul {
+	font-size:		13px;
+}
+
+dt {
+	font-weight:		bold;
+	margin:			8px 0 4px 0;
+}
+dd {
+	margin-left:		40px;
+}
+dd p {
+	margin:			6px 0 0 0;
+}
+
+/* --- General styling --- */
+
+.soma-nb {
+	font-weight:		bold;
+	color:			#e65;
+	padding-right:		6px;
+}
+
+.soma-highlight {
+	color:			#35b;
+}
+
+tt.hex {
+	color:			#a60;
+}
+
+/* .pink	{ color: #b5c; } */
+.red	{ color: #e40; }
+.blue	{ color: #06e; }
+.green	{ color: #090; }
+.orange	{ color: #e80; }
+
+/* --- Layout - General --- */
+
+.soma-contact {
+	max-width:		800px;
+	margin:			auto;
+}
+
+.soma-midi-doc {
+	max-width:		1160px;
+	max-width:		1000px;
+	margin:			auto;
+}
+
+.soma-section {
+	clear:			both;
+	border-top:		3px solid #c8c8fc;
+	margin:			20px 0;
+}
+.soma-subsection {
+	clear:			both;
+	border-top:		2px dashed #b8b8f8;
+	margin:			20px 0;
+}
+
+.soma-firstitem {
+	clear:			both;
+	margin:			20px 0;
+	padding-left:		50px;
+}
+.soma-item {
+	clear:			both;
+	border-top:		2px dashed #b8b8f8;
+	margin:			20px 0;
+	padding-left:		50px;
+}
+
+.soma-indent {
+	margin-left:		50px;
+}
+
+.soma-hangout {
+	float:			left;
+	margin-left:		-50px;
+	width:			48px;
+}
+.soma-firstitem h2.soma-hangout {
+	margin-top:		0;
+}
+
+/* --- Layout - Header/footer --- */
+
+.navbar {
+	background-color:	#fff6e7;
+	border-bottom:		1px solid #d0c0f4;
+}
+.container-fluid>.navbar-header {
+	margin-left:		-5px;
+}
+.navbar-header img {
+	margin-top:		5px;
+}
+.soma-nav-title {
+	position:		absolute;
+	pointer-events:		none;
+	width:			100%;
+	padding:		7px 10px 0 0;
+	text-align:		center;
+	color:			#c070e0;
+	font-size:		24px;
+}
+
+.navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:focus, .navbar-default .navbar-nav>.active>a:hover {
+	background-color:	#feefd0;
+}
+.navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:focus {
+	background-color:	#feefd0;
+}
+
+.dropdown-menu>li>a {
+	color:			#9070e0;
+}
+.dropdown-menu>li>a:hover {
+	background-color:	#feefd0;
+	color:			#9070e0;
+}
+.dropdown-menu>.active>a {
+	background-color:	#b8b8f8;
+}
+.dropdown-menu>.active>a:hover {
+	background-color:	#b0a8f0;
+}
+
+.soma-footer {
+ 	height:			42px;
+	background-color:	#fff1df;
+	border-top:		1px solid #b8b8f8;
+}
+.soma-footer .soma-copyright {
+	color:			#888;
+	font-size:		15px;
+	font-weight:		300;
+	font-style:		italic;
+	margin-top:		0;
+	padding-top:		10px;
+	text-align:		center;
+}
+.soma-footer .soma-pageupdated {
+	float:			left;
+	color:			#888;
+	font-size:		13px;
+	font-style:		italic;
+	padding-top:		11px;
+}
+
+/* --- Layout - App pages --- */
+
+.soma-app {
+	max-width: 1160px;
+	margin: auto;
+}
+.app-content {
+	font-size: 15px;
+	line-height: 22px;
+}
+.app-intro {
+	font-size: 20px;
+	font-weight: 300;
+	color: #99d;
+	line-height: 28px;
+}
+.app-sidebar h2, .app-sidebar h3 {
+	color: #9070e0;
+	font-weight: 300;
+}
+.app-sidebar .panel-heading {
+	padding-top: 6px;
+	padding-bottom: 6px;
+}
+.app-sidebar .panel-heading h2 {
+	font-size: 18px;
+	font-weight: 400;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+.app-sidebar .panel-body {
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+/* --- Table - soma-unframed --- */
+
+.soma-unframed {
+	border-collapse:	collapse;
+	margin-left:		50px;
+}
+.soma-unframed tr {
+	vertical-align:		top;
+}
+.soma-unframed th {
+	padding-right:		30px;
+	text-align:		left;
+}
+.soma-unframed td.subhead {
+	color:			#46c;
+	font-size:		1.1em;
+	padding-top:		3px;
+	padding-bottom:		3px;
+}
+.soma-unframed td {
+	padding-right:		30px;
+	text-align:		left;
+}
+.soma-unframed td.comment {
+	color:			#99a;
+	font-style:		italic;
+}
+
+/* --- Table - soma-framed, soma-cframed, soma-cmframed --- */
+
+.soma-framed, .soma-cframed, .soma-cmframed {
+	border-collapse:	collapse;
+	width:			90%;
+	margin:			16px auto;
+	background-color:	#fff;
+	font:			12px Arial, sans-serif;
+}
+.soma-framed th, .soma-cframed th, .soma-cmframed th {
+	border:			1px solid #888;
+	padding:		4px;
+	font-size:		14px;
+	text-align:		center;
+	background-color:	#ddd;
+}
+
+.soma-cframed td.subhead {
+	font-family:		Arial, sans-serif;
+	font-size:		13px;
+	color:			#46c;
+	background-color:	#ffd;
+	text-align:		left;
+}
+
+.soma-framed td.sidehead, .soma-cframed td.sidehead, .soma-cmframed td.sidehead {
+	border:			1px solid #888;
+	font-size:		13px;
+	font-weight:		bold;
+	text-align:		center;
+	background-color:	#e6e6e6;
+}
+.soma-framed td, .soma-cframed td, .soma-cmframed td {
+	border:			1px solid #ccc;
+	padding:		3px 4px;
+}
+.soma-cframed td {
+	text-align:		center;
+	vertical-align:		top;
+}
+.soma-cmframed td {
+	text-align:		center;
+	vertical-align:		middle;
+}
+.soma-cframed td.desc, .soma-cmframed td.desc {
+	text-align:		left;
+}
+.soma-framed td:first-child, .soma-cframed td:first-child, .soma-cmframed td:first-child {
+	border-left:		1px solid #888;
+}
+.soma-framed td:last-child, .soma-cframed td:last-child, .soma-cmframed td:last-child {
+	border-right:		1px solid #888;
+}
+.soma-framed tr:last-child td, .soma-cframed tr:last-child td, .soma-cframed td.lastrow,
+.soma-cmframed tr:last-child td, .soma-cmframed td.lastrow {
+	border-bottom:		1px solid #888;
+}
+
+/* --- Table - soma-tablenotes --- */
+
+.soma-tablenotes {
+	border-collapse:	collapse;
+	width:			90%;
+	margin:			16px auto;
+	font:			12px Verdana, Arial, sans-serif;
+}
+.soma-tablenotes tr {
+	vertical-align:		top;
+}
+.soma-tablenotes th, .soma-tablenotes td {
+	padding:		2px;
+	text-align:		left;
+}
+.soma-tablenotes td:first-child {
+	width:			80px;
+	padding-right:		20px;
+	text-align:		right;
+}
+
+/* --- Table - soma-appinfo --- */
+
+.soma-appinfo {
+	border-collapse:	collapse;
+	width:			100%;
+}
+.soma-appinfo td {
+	font-family:		Arial, sans-serif;
+	font-size:		13px;
+	padding:		0;
+	line-height:		1.6em;
+}
+.soma-appinfo td:first-child {
+	width:			48%;
+/*	color:			#6a5;*/
+	font-weight:		bold;
+	text-align:		right;
+	padding-right:		12px;
+}
+.soma-appinfo em {
+	font-size:		1.1em;
+	font-style:		normal;
+	font-weight:		bold;
+}
+
+/* --- jQuery/Bootstrap over-rides --- */
+
+.alert {
+	border-radius:		6px;
+}
+.alert-info {
+	background-color:	#ededfe;
+	border-color:		rgba(120, 120, 240, .25);
+	color:			#7878f0;
+}
+.alert-warning {
+	background-color:	#fff6e7;
+	border-color:		rgba(221, 136, 0, .25);
+	color:			#d80;
+}
+.alert-danger {
+	background-color:	#fff1f2;
+	border-color:		rgba(216, 96, 144, .25);
+	color:			#d460c0;
+}
+.alert-success {
+	background-color:	#f0f8e2;
+	border-color:		rgba(101, 159, 19, .25);
+	color:			#659f13;
+}
+
+.btn-info {
+	background-color:	#a0a0f0;
+	border-color:		#8080e0;
+	color:			#fff;
+}
+.btn-info:visited {
+	color:			#fff;
+}
+.btn-info:focus, .btn-info.focus {
+	background-color:	#8080e0;
+	border-color:		#8080e0;
+}
+.btn-info:hover {
+	background-color:	#9090e8;
+	border-color:		#8080e0;
+}
+.btn-info:active, .btn-info.active {
+	background-color:	#8080e0;
+	border-color:		#8080e0;
+}
+.btn-info:active:hover,
+.btn-info.active:hover,
+.open > .dropdown-toggle.btn-info:hover,
+.btn-info:active:focus,
+.btn-info.active:focus,
+.open > .dropdown-toggle.btn-info:focus,
+.btn-info:active.focus,
+.btn-info.active.focus,
+.open > .dropdown-toggle.btn-info.focus {
+  color: #fff;
+  background-color: #8080e0;
+  border-color: #8080e0;
+}
+
+.panel {
+	border-radius: 8px;
+}
+.panel-heading {
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+}
+.panel-info {
+	background-color: #fffcf4;
+	border-color: rgba(144, 112, 224, .25);
+	border-color: #e0d0f4;
+}
+.panel-info>.panel-heading {
+	background-color: #fcf8e3;
+	border-color: #e0d0f4;
+}

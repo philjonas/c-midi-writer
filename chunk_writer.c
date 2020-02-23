@@ -5,8 +5,6 @@
 
 void writeHeaderTrack(Chunk *header, unsigned int numberOfTracks)
 {
-    ;
-
     // numberOfTracks must be between 1 and 16
     numberOfTracks = (unsigned int)CLAMP(numberOfTracks, 1, 16);
 
@@ -70,4 +68,38 @@ void writeTempoTrack(Chunk *tempoTrk, unsigned int bpm,
     }
 
     tempoTrk->chunk_ptr = p;
+}
+
+void writeMusicTrack(Chunk *musicTrk)
+{
+    // TODO: add inputs to this function, controlling notes or sth
+
+    unsigned char *mt = long_to_char_array(MIDI_TRACK_START, 4);
+    unsigned char *et = long_to_char_array(MIDI_TRACK_END, 4);
+
+    unsigned char musicBytes[] = {
+        /* Tempo track */
+        mt[0], mt[1], mt[2], mt[3], // Track header "MTrk"
+        0x00, 0x80, 0x00, 0x00,     // Chunk length // hacky way to avoid calculating track size
+        0x00, 0x91,                 // delta time = 0 // note on // channel 2
+        0x3c, 0x40,                 // middle C // velocity 64
+        0x78, 0x3c, 0x00,           // delta time // middle C // velocity 0 (or a note off)
+        0x78, 0x3c, 0x40,          // delta time // middle C // velocity 64
+        0x78, 0x3c, 0x00,          // delta time // middle C // velocity 0 (or a note off)
+        0x78, 0x3c, 0x40,          // delta time // middle C // velocity 64
+        0x78, 0x3c, 0x00,          // delta time // middle C // velocity 0 (or a note off)
+        0x78, 0x3c, 0x40,          // delta time // middle C // velocity 64
+        0x78, 0x3c, 0x00,          // delta time // middle C // velocity 0 (or a note off)
+        et[0], et[1], et[2], et[3] // End of track
+    };
+
+    musicTrk->size = ARRAY_LENGTH(musicBytes);
+    unsigned char *p = malloc(sizeof(char) * musicTrk->size);
+
+    for (int i = 0; i < musicTrk->size; i++)
+    {
+        p[i] = musicBytes[i];
+    }
+
+    musicTrk->chunk_ptr = p;
 }

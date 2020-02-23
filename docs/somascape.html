@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<!-- saved from url=(0041)http://somascape.org/midi/tech/mfile.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+	<link rel="stylesheet" type="text/css" href="./somascape_files/css">
+	<link rel="shortcut icon" type="image/png" href="http://somascape.org/assets/images/favicon.png">
+
+	<title>Somascape : MIDI Ways - The MIDI Files technical specification</title>
+
+	<!-- CSS : bootstrap, somascape(custom) -->
+	<link rel="stylesheet" href="./somascape_files/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="./somascape_files/soma.css">
+
+	<!-- Javascript : jquery, bootstrap -->
+	<script type="text/javascript" src="./somascape_files/jquery.min.js.download"></script>
+	<script type="text/javascript" src="./somascape_files/bootstrap.min.js.download" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+</head>
+
+
+<body>
+
+<nav class="navbar navbar-default navbar-fixed-top">
+	<div class="container-fluid">
+	  <div class="navbar-header">
+	    <div class="soma-nav-title">Somascape</div>
+	    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#somaNavbar">
+	      <span class="icon-bar"></span>
+	      <span class="icon-bar"></span>
+	      <span class="icon-bar"></span> 
+	    </button>
+	    <a class="pull-left" href="http://somascape.org/index.html" title="Somascape home"><img src="./somascape_files/soma_logo40-0.png" width="40" height="40"></a>
+	  </div>
+	  <div class="collapse navbar-collapse" id="somaNavbar">
+	    <ul class="nav navbar-nav navbar-right">
+	      <li class="dropdown">
+	        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">MIDI
+	        <span class="caret"></span></a>
+	        <ul class="dropdown-menu">
+	          <li class="dropdown-header">Basics</li> 
+	          <li><a href="http://somascape.org/midi/basic/intro.html">Introduction</a></li>
+	          <li><a href="http://somascape.org/midi/basic/gmins.html">GM Voice Map</a></li>
+	          <li><a href="http://somascape.org/midi/basic/qanda.html">Q &amp; A</a></li>
+	          <li class="dropdown-header">Technical</li> 
+	          <li><a href="http://somascape.org/midi/tech/spec.html">MIDI Specification</a></li> 
+	          <li class="active"><a href="http://somascape.org/midi/tech/mfile.html">MIDI Files Specification</a></li> 
+	        </ul>
+	      </li>
+	      <li><a href="http://somascape.org/contact.html">Contact</a></li> 
+	    </ul>
+	  </div>
+	</div>
+</nav>
+
+
+<div class="container-fluid soma-midi-doc">
+
+<h1>MIDI Files Specification</h1>
+
+<h2>Contents</h2>
+
+<ul class="soma-pagecontents">
+ <li><a href="#whatisit">  What is a MIDI file ?</a></li>
+ <li><a href="#structure"> MIDI file structure</a></li>
+ <li><a href="#mthd">      Header chunks</a></li>
+ <li><a href="#mtrk">      Track chunks</a></li>
+ <li><a href="#delta">     Delta times</a></li>
+ <li><a href="#events">    Events</a></li>
+ <li><a href="#midi">      MIDI events</a></li>
+ <li><a href="#sysex">     SysEx events</a></li>
+ <li><a href="#meta">      Meta events</a></li>
+</ul>
+
+<h4>Conventions</h4>
+
+<ul>
+ <li>A byte is an 8-bit quantity.</li>
+ <li>Bit 0 is the least significant bit (lsb), bit 7 is the most
+  significant bit (msb) of a byte.  These are also referred to as the
+  bottom and top bits, respectively.</li>
+ <li>I have used the C (programming language) notation of representing
+  hexadecimal numbers by prefacing them with '0x', e.g. 0x7F (=127 decimal).
+  Numbers shown in brown are also hex (without the prefix), e.g.
+  <tt class="hex">FF 2F 00</tt>.</li>
+</ul>
+
+
+<div class="soma-section">
+
+<a name="whatisit"></a>
+<h2>What is a MIDI file ?</h2>
+
+<p>MIDI files are <em>the</em> standard means of transferring MIDI data
+amongst users – it is a common format across all computing
+platforms.  MIDI files contain the standard channel based MIDI messages,
+along with sequencer-related data (e.g. tempo, time and key signature, track
+names, etc.) and System Exclusive messages.  Each message (also
+referred to as an <b>event</b>) is time stamped.</p>
+
+<p>Any decent MIDI sequencer should allow MIDI files to be loaded and
+saved, in addition to the use of any proprietary file format.</p>
+
+<p>MIDI files differ from most other types of music files in that they do
+not contain encoded sound (e.g. as in a WAV file).  Consequently,
+compared with WAV or even MP3 files, MIDI files are extremely compact.</p>
+
+</div><!-- close div.soma-section -->
+
+
+<div class="soma-section">
+
+<a name="structure"></a>
+<h2>MIDI file structure</h2>
+
+<p>The content of a MIDI file is structured as a series of blocks of data
+referred to as <b>chunks</b>, of which two types have been defined :</p>
+
+<ul>
+  <li><b>MThd</b> : Header chunk, containing a few global properties of the file
+   as a whole.</li>
+  <li><b>MTrk</b> : Track chunk, containing MIDI and/or sequencer-specific data.</li>
+</ul>
+
+<p>A valid MIDI file will contain a single Header chunk followed by one or
+more Track chunks.</p>
+
+<p>Each chunk has an 8 byte header that identifies which type it is, and
+gives the size of its associated data&nbsp;:</p>
+
+<ul>
+  <li>bytes 0 - 3 : <b>identifier</b> (either '<tt><b>MThd</b></tt>' or
+   '<tt><b>MTrk</b></tt>')</li>
+  <li>bytes 4 - 7 : <b>chunklen</b> (the number of bytes comprising the
+   following data)</li>
+</ul>
+
+<p>followed by 'chunklen' bytes of data.  I.e. a chunk is (8 + chunklen) bytes
+long.</p>
+
+<p>To allow for future expansion, a MIDI file reader should skip over (ie
+ignore) any chunk types that it does not know about, which it can easily
+do by reading the offending chunk's chunklen.  Any MIDI file reader should
+definately support these two standard chunk types, though.</p>
+
+<p><span class="soma-nb">Note</span> that multi-byte values (eg
+<b>chunklen</b>, above) are stored in big-endian format, i.e. with their MSB
+first.</p>
+
+</div><!-- close div.soma-section -->
+
+
+<div class="soma-section">
+
+<a name="mthd"></a>
+<h2>Header chunks</h2>
+
+<p>The <b>Header</b> chunk (identifier = <b>MThd</b>) has a fixed length
+and contains a few global properties pertaining to the file as a whole. 
+It should be the first chunk in the file, and this should be the only
+occurrence.</p>
+
+<p>Although the Header chunk currently always contains 6 bytes of data (ie
+chunklen = 6), this should not be assumed.  I.e. the chunklen value should
+always be read and acted upon, to allow for possible future extension to
+the standard.</p>
+
+<p>Currently these 6 bytes of data represent 3 x 16-bit parameters (in
+big-endian format) : <b>format</b>, <b>ntracks</b> and <b>tickdiv</b>.</p>
+
+<ul>
+
+  <li><p><b>format</b> : describes the chunk structure of a MIDI file.  It
+   determines how the following <b>MTrk</b> chunks relate to one another. 
+   The term <b>type</b> is often used synonymously with <b>format</b>.
+   This parameter can take one of 3 values, i.e. there are 3 types of MIDI
+   files :</p>
+
+   <p><b>format type = 0</b><br>
+   The MIDI file contains just a single MTrk chunk, that can potentially
+   contain multi-channel MIDI data.</p>
+
+   <p><b>format type = 1</b><br>
+   The file contains two or more MTrk chunks (as specified by the
+   following parameter, <b>ntracks</b>) that are to be played
+   simultaneously, i.e. analogous to a mulitrack tape recorder.  The first
+   track is a <b>tempo</b> track that should only contain tempo related
+   Meta events (i.e. no actual MIDI data) – this is clarified
+   <a href="#mtrk">later</a>. 
+   This is the most commonly used format, as the various instrumental
+   parts within a composition can be stored in separate tracks, allowing
+   for easier editing.  It is possible to store multi-channel data in a
+   track, though it is more usual to keep data relevant to a single MIDI
+   channel in each track.</p>
+
+   <p><b>format type = 2</b><br>
+   The file contains one or more MTrk chunks (as specified by the
+   following parameter, <b>ntracks</b>) that are intended to be played
+   independently, i.e. analogous to a drum machine's pattern memory.  A
+   format 2 file can be likened to multiple format 0 files all wrapped up
+   in a single file.</p></li>
+
+  <li><p><b>ntracks</b> : the number of MTrk chunks following this MThd
+   chunk.</p>
+
+   <p>For a format 0 MIDI file, ntracks can only be '1'.</p>
+
+   <p>For format 1 or 2 files, ntracks can be any value.  There is no
+   limitation as far as the file format is concerned, though sequencer
+   software will generally impose a limit. If you were to attempt to load
+   a MIDI file containing more tracks than your sequencer can handle, it
+   should load as many as it is able to, ignoring the remainder.</p>
+
+   <p>Naturally the actual number of MTrk chunks following this MThd chunk
+   should be the same as the value specified here for ntracks.</p></li>
+
+  <li><p><b>tickdiv</b> : specifies the timing interval to be used, and
+   whether <b>timecode</b> (Hrs.Mins.Secs.Frames) or <b>metrical</b>
+   (Bar.Beat) timing is to be used.  With metrical timing, the timing
+   interval is tempo related, whereas with timecode the timing interval is
+   in absolute time, and hence not related to tempo.</p>
+
+   <p>Bit 15 (the top bit of the first byte) is a flag indicating the
+   timing scheme in use :</p>
+
+   <p><b>Bit 15 = 0 : metrical timing</b><br>
+   Bits 0 - 14 are a 15-bit number indicating the number of sub-divisions
+   of a quarter note (aka pulses per quarter note, ppqn).  A common value
+   is 96, which would be represented in hex as <tt class="hex">00 60</tt>.
+   You will notice that 96 is a nice number for dividing by 2 or 3 (with
+   further repeated halving), so using this value for tickdiv allows
+   triplets and dotted notes right down to hemi-demi-semiquavers to be
+   represented.</p>
+
+   <p><b>Bit 15 = 1 : timecode</b><br>
+   Bits 8 - 15 (i.e. the first byte) specifies the number of frames per
+   second (fps), and will be one of the four SMPTE standards - 24, 25, 29
+   or 30, though expressed as a negative value (using 2's complement
+   notation), as follows :</p>
+
+   <table border="0" class="soma-unframed">
+    <tbody><tr>
+     <th>fps</th><th>Representation (hex)</th>
+    </tr>
+    <tr>
+     <td><tt>24<br>25<br>29<br>30</tt></td>
+     <td><tt class="hex">E8<br>E7<br>E3<br>E2</tt></td>
+    </tr>
+   </tbody></table>
+
+   <p>Bits 0 - 7 (the second byte) specifies the sub-frame resolution, i.e.
+   the number of sub-divisions of a frame.  Typical values are 4
+   (corresponding to MIDI Time Code), 8, 10, 80 (corresponding to SMPTE
+   bit resolution), or 100.</p>
+
+   <p>A timing resolution of 1 ms can be achieved by specifying 25 fps and
+   40 sub-frames, which would be encoded in hex as&nbsp;
+   <tt class="hex">E7 28</tt>.</p></li>
+
+</ul>
+
+<p>A complete MThd chunk thus contains 14 bytes (including the 8 byte header).</p>
+
+<h4>Example</h4>
+
+<table border="0" class="soma-unframed">
+ <tbody><tr>
+  <th>Data (hex)</th><th>Interpretation</th>
+ </tr>
+ <tr>
+  <td><tt class="hex">4D 54 68 64</tt></td>
+  <td class="comment"><b>identifier</b>, the ascii chars '<b>MThd</b>'</td>
+ </tr>
+ <tr>
+  <td><tt class="hex">00 00 00 06</tt></td>
+  <td class="comment"><b>chunklen</b>, 6 bytes of data follow . . .</td>
+ </tr>
+ <tr>
+  <td><tt class="hex">00 01</tt></td>
+  <td class="comment"><b>format</b> = 1</td>
+ </tr>
+ <tr>
+  <td><tt class="hex">00 11</tt></td>
+  <td class="comment"><b>ntracks</b> = 17</td>
+ </tr>
+ <tr>
+  <td><tt class="hex">00 60</tt></td>
+  <td class="comment"><b>tickdiv</b> = 96 ppqn, metrical time</td>
+ </tr>
+</tbody></table>
+
+</div><!-- close div.soma-section -->
+
+
+<div class="soma-section">
+
+<a name="mtrk"></a>
+<h2>Track chunks</h2>
+
+<p><b>Track</b> chunks (identifier = <b>MTrk</b>) contain a sequence of
+time-ordered <b>events</b> (MIDI and/or sequencer-specific data), each of
+which has a <b>delta time</b> value associated with it - i.e. the amount of
+time (specified in <b>tickdiv</b> units) since the previous event.</p>
+
+<p>It is possible to mix messages having different MIDI channels within
+the same track chunk, i.e. multi-channel tracks are possible.</p>
+
+<p>The role of the various Track chunks (particularly the first), and the
+types of events that they can contain, depends on the MIDI file's
+<b>format</b> (as defined in the <a href="#mthd">MThd chunk</a>).</p>
+
+<ul>
+
+  <li><p>For <b>format 0</b> MIDI files, there should only be one MTrk
+   chunk, and this can therefore contain any valid event - i.e. all timing
+   related and note (potentially multi MIDI channel) data.</p></li>
+
+  <li><p>For <b>format 1</b> files, the first MTrk chunk is a <em>global
+   tempo track</em> and should contain all timing related events and no
+   note data.  The second and subsequent MTrk chunks contain the actual
+   note data, and should not contain any timing related events.  As all
+   tracks are played together, they all follow the tempo map described in
+   the global tempo track (the first MTrk chunk).</p></li>
+
+   <li><p>For <b>format 2</b> files, each track is a separate entity (like
+   drum patterns within a drum machine), and can each contain any type of
+   event.  There is no global tempo track - each track may have its own
+   tempo map.  Any timing related events are specific to the track in
+   which they occur.</p></li>
+
+</ul>
+
+<p><span class="soma-nb">Note</span> In the above description,
+<em>note data</em> refers to all MIDI events (Channel MIDI messages),
+whereas <em>timing related events</em> refers to the following Meta
+events : Marker, Cue Point, Tempo, SMPTE Offset, Time Signature, and Key
+Signature.  Key Signature events are not strictly timing related, though
+they fall into this group.  These Meta events are all detailed <a href="#meta">later</a>.</p>
+
+
+<p>The actual data within an MTrk chunk takes the following form :</p>
+
+<table border="0" class="soma-unframed">
+ <tbody><tr>
+  <td width="100">delta-time</td><td>a variable length quantity,
+   (1 to 4 bytes) denoting the time since the previous event.</td>
+ </tr>
+ <tr>
+  <td>event</td><td>2 or more bytes describing the event, of
+   which there are three main types : MIDI, SysEx and Meta.</td>
+ </tr>
+</tbody></table>
+
+<p>repeated for '<b>chunklen</b>' bytes.  Track chunks thus contain a
+sequence of '<b>delta-time</b> / <b>event</b>' pairs.  The three event
+types can be intermixed within a Track chunk.</p>
+
+<p>In all cases the last event in each MTrk chunk should be an <b>End of
+Track</b> Meta event.</p>
+
+</div><!-- close div.soma-section -->
+
+
+<div class="soma-section">
+
+<a name="delta"></a>
+<h2>Delta times</h2>
+
+<p>The <b>delta-time</b> specifies the number of <b>tickdiv</b> intervals
+since the previous event (or from the nominal start of the track if this
+is the first event).  If an event is to occur at the very start of a
+track, or simultaneously with the previous event, then it will have a
+delta-time of 0.  The delta-time is a <em>variable length
+quantity</em> in that it is specified using 1, 2, 3 or 4 bytes, as
+necessary.</p>
+
+<p>Only the bottom 7 bits of each of these bytes contributes towards the
+delta-time, the top bit being used to indicate (when it is set) that
+another byte follows, i.e. bit 7 of each byte is used to indicate
+continuation or end of the delta-time data.  Consequently the last byte of
+any delta-time value will have its top bit clear.</p>
+
+<p>Here are some examples of numbers represented as variable-length
+quantities :</p>
+
+<table border="0" class="soma-unframed">
+ <tbody><tr>
+  <th>Value (hex)</th><th>Representation (hex)</th>
+ </tr>
+ <tr>
+  <td><tt class="hex">00000000</tt></td>
+  <td><tt class="hex">00</tt></td>
+ </tr>
+ <tr>
+  <td><tt class="hex">00000040</tt></td>
+  <td><tt class="hex">40</tt></td>
+ </tr>
+ <tr>
+  <td><tt class="hex">0000007F</tt></td>
+  <td><tt class="hex">7F</tt></td>
+ </tr>
+ <tr>
+  <td><tt class="hex">00000080</tt></td>
+  <td><tt class="hex">81 00</tt></td>
+ </tr>
+ <tr>
+  <td><tt class="hex">00002000</tt></td>
+  <td><tt class="hex">C0 00</tt></td>
+ </tr>
+ <tr>
+  <td><tt class="hex">00003FFF</tt></td>
+  <td><tt class="hex">FF 7F</tt></td>
+ </tr>
+ <tr>
+  <td><tt class="hex">00004000</tt></td>
+  <td><tt class="hex">81 80 00</tt></td>
+ </tr>
+ <tr>
+  <td><tt class="hex">00100000</tt></td>
+  <td><tt class="hex">C0 80 00</tt></td>
+ </tr>
+ <tr>
+  <td><tt class="hex">001FFFFF</tt></td>
+  <td><tt class="hex">FF FF 7F</tt></td>
+ </tr>
+ <tr>
+  <td><tt class="hex">00200000</tt></td>
+  <td><tt class="hex">81 80 80 00</tt></td>
+ </tr>
+ <tr>
+  <td><tt class="hex">08000000</tt></td>
+  <td><tt class="hex">C0 80 80 00</tt></td>
+ </tr>
+ <tr>
+  <td><tt class="hex">0FFFFFFF</tt></td>
+  <td><tt class="hex">FF FF FF 7F</tt></td>
+ </tr>
+</tbody></table>
+
+<p>Most of the time, musical events are sufficiently close together that
+the delta-time can be expressed in a single byte (i.e. for delta-times of 0
+- 127).  When a larger delta-time needs to be specified then additional
+bytes are used.  This provides an efficient way of storing delta-time
+values.</p>
+
+<p>Note that this concept of variable length quantities is not exclusive
+to delta-times, and is used elsewhere in MIDI files (e.g. the <em>length</em>
+parameter for SysEx and Meta events).</p>
+
+</div><!-- close div.soma-section -->
+
+
+<div class="soma-section">
+
+<a name="events"></a>
+<h2>Events</h2>
+
+<p>There are three main types of <b>event</b> that can occur within a MTrk
+chunk - <b>MIDI</b>, <b>SysEx</b> and <b>Meta</b>.  Events are not all the
+same size - they use as many bytes as are necessary to describe each
+specific event.  The first byte of the event data (often referred to as
+the event's <b>status</b> byte, and identifiable by their having bit 7
+set) identifies the event type :</p>
+
+<ul>
+
+  <li><p><b>Midi events (status bytes 0x8n - 0xEn)</b><br>
+   Corresponding to the standard Channel MIDI messages, i.e. where 'n' is
+   the MIDI channel (0 - 15).  This status byte will be followed by 1 or 2
+   data bytes, as is usual for the particular MIDI message.  Any valid
+   Channel MIDI message can be included in a MIDI file.</p>
+
+   <p>If the first (status) byte is less than 128 (hex 80), this implies
+   that <b>running status</b> is in effect, and that this byte is actually
+   the first data byte (the status carrying over from the previous MIDI
+   event).  This can only be the case if the immediately previous event
+   was also a MIDI event, i.e. SysEx and Meta events interrupt (clear)
+   running status.</p></li>
+
+  <li><p><b>SysEx events (status bytes 0xF0 and 0xF7)</b><br>
+   There are a couple of ways in which system exclusive messages can be
+   encoded - as a single message (using the 0xF0 status), or split into
+   packets (using the 0xF7 status).  The 0xF7 status is also used for
+   sending <b>escape sequences</b>.</p></li>
+
+  <li><p><b>Meta events (status byte 0xFF)</b><br>
+   These contain additional information which would not be in the MIDI
+   data stream itself.  E.g. TimeSig, KeySig, Tempo, TrackName, Text,
+   Marker, Special, EOT (End of Track) events being some of the most
+   common.</p></li>
+
+</ul>
+
+<p>Note that the status bytes associated with <b>System Common</b>
+messages (0xF1 to 0xF6 inclusive) and <b>System Real Time</b> messages
+(0xF8 to 0xFE inclusive) are not valid within a MIDI file.  Generally none
+of these messages are relevant within a MIDI file, though for the rare
+occasion when you do need to include one, it should be embedded within a
+<b>SysEx escape sequence</b>.</p>
+
+<p>The main differences between the contents of a MIDI file and a live
+stream of MIDI data (i.e. flowing along a MIDI cable) are :</p>
+
+<ul>
+
+ <li>In MIDI files, all events have an associated delta time value.  In a
+  MIDI data stream, events happen when they are received.</li>
+ <li>System Common messages (0xF1 to 0xF6 inclusive) and System Real Time
+  messages (0xF8 to 0xFE inclusive) cannot normally occur within a MIDI
+  file (though see <a href="#sysex3">escape sequences</a>).</li>
+ <li>As mentioned above, within a MIDI file the System Reset status byte
+  (0xFF) is used to signify a Meta event, hence Meta events are only found
+  in MIDI files.</li>
+
+</ul>
+
+</div><!-- close div.soma-section -->
+
+
+<div class="soma-section">
+
+<a name="midi"></a>
+<h2>MIDI events</h2>
+
+<p>MIDI events include all of the Channel MIDI messages. In all cases the
+status byte is nibblised, with the top nibble (i.e. the top 4 bits)
+indicating the message type (0x8 to 0xE), and the lower nibble indicating
+the MIDI channel (referred to as 'n' below).</p>
+
+<p>The first three of these messages specify a MIDI note number : 0 - 127
+(C-1 - G9), with middle C (C4) being note number 60 (0x3C). The standard 5
+octave synthesizer keyboard range is 36 - 96, whereas the 88-note piano
+keyboard range is 21 - 108. Refer to this <a href="http://somascape.org/midi/basic/notes.html">ready
+reckoner table of MIDI note numbers</a> for the complete mapping.</p>
+
+
+<h3>Note Off</h3>
+
+<p>3 bytes : <tt class="hex">8n note velocity</tt></p>
+
+<p>Stop sounding the specified <b>note</b>, on MIDI channel <b>n</b>.</p>
+
+<p><b>note</b> is the key number (0 - 127).<br>
+
+<b>velocity</b> is the release velocity (0 - 127). A default value of 64
+is used in the absence of velocity sensors.</p>
+
+
+<h3>Note On</h3>
+
+<p>3 bytes : <tt class="hex">9n note velocity</tt></p>
+
+<p>Start sounding the specified <b>note</b>, on MIDI channel <b>n</b>.</p>
+
+<p>
+ <b>note</b> is the key number (0 - 127).<br>
+ <b>velocity</b> is the attack velocity (0 - 127).  A default value of 64
+ is used in the absence of velocity sensors. A value of 0 has a special
+ meaning and is interpreted as a Note Off (thus allowing the use of
+ running status for a sequence of Note On and Off commands). </p>
+
+
+<h3>Polyphonic Pressure</h3>
+
+<p>3 bytes : <tt class="hex">An note pressure</tt></p>
+
+<p>Apply aftertouch pressure to the specified <b>note</b>, on MIDI channel
+<b>n</b>.</p>
+
+<p>
+ <b>note</b> is the key number (0 - 127).<br>
+ <b>pressure</b> is the amount of aftertouch (0 - 127).
+</p>
+
+
+<h3>Controller</h3>
+
+<p>3 bytes : <tt class="hex">Bn controller value</tt></p>
+
+<p>Set the specified <b>controller</b>, on MIDI channel
+<b>n</b>, to <b>value</b>.</p>
+
+<p>
+ <b>controller</b> is the controller number (0 - 127).  Controllers 120 -
+ 127 are the Channel Mode messages.<br>
+ <b>value</b> is the value to which the controller is to be set (0 - 127).
+</p>
+
+<p>Refer to my <b>MIDI Software Specification</b> document for
+details regarding <a href="http://somascape.org/midi/tech/spec.html#ctrlnums">controller number
+assignment</a> and <a href="http://somascape.org/midi/tech/spec.html#chanmodemsgs">Channel Mode
+messages</a>.</p>
+
+
+<h3>Program Change</h3>
+
+<p>2 bytes : <tt class="hex">Cn program</tt></p>
+
+<p>Select the specified <b>program</b> (i.e. voice, or instrument), on MIDI
+channel <b>n</b>.</p>
+
+<p>
+ <b>program</b> is the voice number to be selected (0 - 127).
+</p>
+
+
+<h3>Channel Pressure</h3>
+
+<p>2 bytes : <tt class="hex">Dn pressure</tt></p>
+
+<p>Apply aftertouch pressure to all notes currently sounding on MIDI
+channel <b>n</b>.</p>
+
+<p>
+ <b>pressure</b> is the amount of aftertouch (0 - 127).
+</p>
+
+
+<h3>Pitch Bend</h3>
+
+<p>3 bytes : <tt class="hex">En lsb msb</tt></p>
+
+<p>Apply pitch bend to all notes currently sounding on MIDI
+channel <b>n</b>.</p>
+
+<p><b>lsb</b> (0 - 127) and <b>msb</b> (0 - 127) together form a 14-bit
+number, allowing fine adjustment to pitch.<br>
+Using hex,<tt class="hex"> 00 40 </tt> is the central (no bend)
+setting.<tt class="hex"> 00&nbsp;00 </tt> gives the maximum downwards
+bend, and<tt class="hex"> 7F&nbsp;7F </tt> the maximum upwards bend.</p>
+
+<p>The amount of pitch bend produced by these minimum and maximum settings
+is determined by the receiving device's Pitch Bend Sensitivity, which
+can be set using RPN 00 00.</p>
+
+</div><!-- close div.soma-section -->
+
+
+<div class="soma-section">
+
+<a name="sysex"></a>
+<h2>SysEx events</h2>
+
+<p>There are a couple of ways of encoding System Exclusive messages.  The
+normal method is to encode them as a single event, though it is also
+possible to split messages into separate packets (<b>continuation
+events</b>).  A third form (an <b>escape sequence</b>) is used to wrap up
+arbitrary bytes that could not otherwise be included in a MIDI file.</p>
+
+<h3>Single (complete) SysEx messages</h3>
+
+<p><tt class="hex">F0 length message</tt></p>
+
+<p><b>length</b> is a <em>variable length quantity</em> (as used to
+represent delta-times) which specifies the number of bytes in the
+following <b>message</b>.<br>
+
+<b>message</b> is the remainder of the system exclusive message, minus the
+initial 0xF0 status byte.</p>
+
+<p>Thus, it is just like a normal system exclusive message, though with
+the additional <b>length</b> parameter.</p>
+
+<p>Note that although the terminal 0xF7 is redundant (strictly
+speaking, due to the use of a <b>length</b> parameter) it <em>must</em> be
+included.</p>
+
+<h4>Example</h4>
+
+<div class="soma-indent">
+ <p>The system exclusive message :<br>
+ <tt class="hex">F0 7E 00 09 01 F7</tt></p>
+
+ <p>would be encoded (without the preceding delta-time) as :<br>
+ <tt class="hex">F0 05 7E 00 09 01 F7</tt></p>
+
+ <p>(In case you're wondering, this is a <b>General MIDI Enable</b> message.)</p>
+</div>
+
+
+<h3>SysEx messages sent as packets - Continuation events</h3>
+
+<p>Some older MIDI devices, with slow onboard processors, cannot cope with
+receiving a large amount of data en-masse, and require large system
+exclusive messages to be broken into smaller packets, interspersed with a
+pause to allow the receiving device to process a packet and be ready for
+the next one.</p>
+
+<p>This approach can of course be used with the method described above, i.e.
+with each packet being a self-contained system exclusive message (i.e. each
+starting with 0xF0 and ending with 0xF7).</p>
+
+<p>Unfortunately, some manufacturers (notably Casio) have chosen to bend
+the standard, and rather than sending the packets as self-contained system
+exclusive messages, they act as though running status applied to system
+exclusive messages (which it doesn't - or at least it shouldn't).</p>
+
+<p>What Casio do is this : the first packet has an initial 0xF0 byte but
+doesn't have a terminal 0xF7.  The last packet doesn't have an initial
+0xF0 but does have a terminal 0xF7.  All intermediary packets have
+neither.  No unrelated events should occur between these packets.  The
+idea is that all the packets can be stitched together at the receiving
+device to create a single system exclusive message.</p>
+
+<p>Putting this into a MIDI file, the first packet uses the 0xF0 status,
+whereas the second and subsequent packets use the 0xF7 status.  This
+use of the 0xF7 status is referred to as a <b>continuation event</b>.</p>
+
+<h4>Example</h4>
+
+<div class="soma-indent">
+ <p>A 3-packet message :</p>
+
+ <tt class="hex">F0 43 12 00</tt><br>
+ <tt class="hex">43 12 00 43 12 00</tt><br>
+ <tt class="hex">43 12 00 F7</tt><br>
+
+ <p>with a 200-tick delay between the first two, and a 100-tick delay between
+ the final two, would be encoded (without the initial delta-time, before
+ the first packet) :</p>
+</div>
+
+<table border="0" class="soma-unframed">
+ <tbody><tr>
+  <td><tt class="hex">F0 03 43 12 00</tt></td>
+  <td class="comment">first packet (the 4 bytes F0,43,12,00 are transmitted)</td>
+ </tr>
+ <tr>
+  <td><tt class="hex">81 48</tt></td>
+  <td class="comment">200-tick delta-time</td>
+ </tr>
+ <tr>
+  <td><tt class="hex">F7 06 43 12 00 43 12 00</tt></td>
+  <td class="comment">second packet (the 6 bytes 43,12,00,43,12,00 are
+  transmitted)</td>
+ </tr>
+ <tr>
+  <td><tt class="hex">64</tt></td>
+  <td class="comment">100-tick delta-time</td>
+ </tr>
+ <tr>
+  <td><tt class="hex">F7 04 43 12 00 F7</tt></td>
+  <td class="comment">third packet (the 4 bytes 43,12,00,F7 are transmitted)</td>
+ </tr>
+</tbody></table>
+
+<p>See the <a href="#sysexnote">note</a> below regarding distinguishing
+packets and escape sequences (which both use the 0xF7 status).</p>
+
+
+<a name="sysex3"></a>
+<h3>Escape sequences</h3>
+
+<p><tt class="hex">F7 length bytes</tt></p>
+
+<p><b>length</b> is a <em>variable length quantity</em> which
+specifies the number of bytes in <b>bytes</b>.</p>
+
+<p>This has nothing to do with System Exclusive messages as such, though
+it does use the 0xF7 status.  It provides a way of including bytes that
+could not otherwise be included within a MIDI file, e.g. System Common and
+System Real Time messages (Song Position Pointer, MTC, etc).</p>
+
+<p>Note that Escape sequences do not have a terminal 0xF7 byte.</p>
+
+<h4>Example</h4>
+
+<div class="soma-indent">
+ <p>The <b>Song Select</b> System Common message :<br>
+ <tt class="hex">F3 01</tt></p>
+
+ <p>would be encoded (without the preceding delta-time) as :<br>
+ <tt class="hex">F7 02 F3 01</tt></p>
+</div>
+
+<p>You are not restricted to single messages per escape sequence - any
+arbitrary collection of bytes may be included in a single sequence.</p>
+
+<p><a name="sysexnote"></a>
+<span class="soma-nb">Note</span> <b>Parsing the 0xF7 status byte</b></p>
+
+<p>When an event with an 0xF7 status byte is encountered whilst reading a
+MIDI file, its interpretation (SysEx packet or escape sequence) is
+determined as follows :</p>
+
+<ul>
+
+ <li><p>When an event with 0xF0 status but lacking a terminal 0xF7 is
+  encountered, then this is the first of a Casio-style multi-packet
+  message, and a <em>flag</em> (boolean variable) should be set to
+  indicate this.</p></li>
+
+ <li><p>If an event with 0xF7 status is encountered whilst this
+  <em>flag</em> is set, then this is a continuation event (a system
+  exclusive packet, one of many).<br>
+  If this event has a terminal 0xF7, then it is the last packet and
+  <em>flag</em> should be cleared.</p></li>
+
+ <li><p>If an event with 0xF7 status is encountered whilst
+  <em>flag</em> is clear, then this event is an escape sequence.</p></li>
+
+</ul>
+
+<p>Naturally, the <em>flag</em> should be initialised clear prior to
+reading each track of a MIDI file.</p>
+
+</div><!-- close div.soma-section -->
+
+
+<div class="soma-section">
+
+<a name="meta"></a>
+<h2>Meta events</h2>
+
+<p>Meta events are used for special non-MIDI events, and use the 0xFF status
+that in a MIDI data stream would be used for a System Reset message (a System
+Reset message would not be useful within a MIDI file).</p>
+
+<p>They have the general form : <tt class="hex">FF type length data</tt></p>
+
+<p><b>type</b> specifies the type of Meta event (0 - 127).<br>
+
+<b>length</b> is a <em>variable length quantity</em> (as used to
+represent delta times) specifying the number of bytes that make up the
+following <b>data</b>.  Some Meta events do not have a <b>data</b> field,
+whereupon <b>length</b> is 0.</p>
+
+<p>The use of a <em>variable length quantity</em>, rather than a
+fixed single byte, for <b>length</b> meams that data fields longer than
+127 bytes are possible.</p>
+
+<p>The <b>length</b> field should always be read, and should not be
+assumed, as the definition may change.  A MIDI file reader/player should
+ignore any Meta event types that it does not know about.  It should also
+ignore any additional data if an event's length is longer than expected
+(it is safe to assume that any extension to the data field will be
+<em>appended</em> to the current definition).  For example if at some
+time in the future the Sequence Number Meta event is extended with a third
+data byte, then the first 2 will still have the same interpretation as
+currently.</p>
+
+<p>Meta event types 0x01 to 0x0F inclusive are reserved for text events. 
+In each case it is best to use the standard 7-bit ASCII character set to
+ensure reliable interchangeability when transferring files between
+different computing platforms, however an 8-bit character set may be
+used.  Many text events are best located at or near the beginning of a
+track (e.g. Copyright, Sequence/Track name, Instrument name), whereas
+others (Lyric, Marker, Cue point) can occur at various places within a
+track – their position being an integral aspect of the event.</p>
+
+<p>Although most Meta events are optional, a few are mandatory.  Also
+some events have restrictions regarding their placement.</p>
+
+
+<h3>Sequence Number</h3>
+
+<p><tt class="hex">FF 00 02 ss ss</tt></p>
+
+<p><b>ss ss</b> is a 16-bit value specifying the sequence number (as would
+be used in a <b>MIDI Cue</b> message).</p>
+
+<p>This event is optional, though if present should occur at time = 0, and
+prior to any MIDI events.  It should not occur more than once in any
+single MTrk chunk.</p>
+
+<p>For format 0 and 1 MIDI files (which contain just one sequence) this
+event should occur only in the first track (the only track, in the case of
+format 0 files).  A collection of format 0/1 files, each with a unique
+sequence number, could be loaded by a jukebox-style file player, such
+that individual files (sequences) could be selected using a MIDI Cue
+message.</p>
+
+<p>For format 2 MIDI files this event can occur in each track, such that a
+MIDI Cue message could be used to identify each pattern/sequence (MTrk
+chunk) as part of a song sequence.</p>
+
+<p>A shortened version can be used in format 2 MIDI files : the 2 data
+bytes can be omitted (thus length must be 0), whereupon the sequence
+number is derived from the MTrk chunk's position within the file.</p>
+
+
+<h3>Text</h3>
+
+<p><tt class="hex">FF 01 length text</tt></p>
+
+<p><b>length</b> is a <em>variable length quantity</em> specifying
+the number of bytes making up the following <b>text</b>.<br>
+
+<b>text</b> is any amount of ASCII text.</p>
+
+<p>This event is optional, and is used to include comments and other user
+information.  There are other text-based Meta events for specific
+purposes, such as Track Name, Copyright Message, Lyrics, etc. It is
+recommended, though not essential, that this event is placed near the
+start of a track.</p>
+
+
+<h3>Copyright</h3>
+
+<p><tt class="hex">FF 02 length text</tt></p>
+
+<p>This event contains a copyright message comprising the characters '(C)'
+along with the year and owner of the copyright.  This event is optional,
+though if present it should be the very first event (at time 0) in the
+first MTrk chunk.  There should be no other occurrences within the MIDI
+file, so if there are multiple copyright messages, they should all be
+placed together in a single event.</p>
+
+
+<h3>Sequence / Track Name</h3>
+
+<p><tt class="hex">FF 03 length text</tt></p>
+
+<p>This event is optional.  It's interpretation depends on its context.
+If it occurs in the first track of a format 0 or 1 MIDI file, then it
+gives the <b>Sequence Name</b>.  Otherwise it gives the <b>Track
+Name</b>.</p>
+
+
+<h3>Instrument Name</h3>
+
+<p><tt class="hex">FF 04 length text</tt></p>
+
+<p>This optional event is used to provide a textual clue regarding the
+intended instrumentation for a track (e.g. 'Piano' or 'Flute', etc).  If
+used, it is reccommended to place this event near the start of a
+track.</p>
+
+<p>It may be used with the <b>MIDI Channel Prefix</b> Meta event to
+specify the MIDI channel that this instrument name description applies to. 
+Alternatively, the MIDI channel could be specified textually within the
+<b>Instrument Name</b> Meta event.</p>
+
+
+<h3>Lyric</h3>
+
+<p><tt class="hex">FF 05 length text</tt></p>
+
+<p>This optional event contains a song's lyric (the words to be sung). 
+Generally, each syllable of a lyric will be in a separate Lyric event,
+placed at appropriate points throughout a track.</p>
+
+
+<h3>Marker</h3>
+
+<p><tt class="hex">FF 06 length text</tt></p>
+
+<p>This optional event is used to label points within a sequence, e.g.
+rehearsal letters, loop points, or section names (such as 'First
+verse').</p>
+
+<p>For a format 1 MIDI file, <b>Marker</b> Meta events should only occur
+within the first MTrk chunk.</p>
+
+
+<h3>Cue Point</h3>
+
+<p><tt class="hex">FF 07 length text</tt></p>
+
+<p>This optional event is used to describe something that happens within a
+film, video or stage production at that point in the musical score.  E.g.
+'Car crashes', 'Door opens', etc.</p>
+
+<p>For a format 1 MIDI file, <b>Cue Point</b> Meta events should only
+occur within the first MTrk chunk.</p>
+
+
+<h3>Program Name</h3>
+
+<p><tt class="hex">FF 08 length text</tt></p>
+
+<p>This optional event is used to embed the patch/program name that is called up by the
+immediately subsequent Bank Select and Program Change messages.  It serves to aid the
+end user in making an intelligent program choice when using different hardware.</p>
+
+<p>This event may appear anywhere in a track, and there may be multiple occurrences within
+a track.</p>
+
+
+<h3>Device Name</h3>
+
+<p><tt class="hex">FF 09 length text</tt></p>
+
+<p>This optional event is used to identify the hardware device used to produce sounds for
+this track.</p>
+
+<p>It should occur only once in a track, at the beginning before any sendable MIDI data.
+It should also precede any <b>Program Name</b> Meta events.</p>
+
+
+<h3>MIDI Channel Prefix</h3>
+
+<p><tt class="hex">FF 20 01 cc</tt></p>
+
+<p><b>cc</b> is a byte specifying the MIDI channel (0-15).</p>
+
+<p>This optional event is used to associate any subsequent SysEx and Meta
+events with a particular MIDI channel, and will remain in effect until the
+next <b>MIDI Channel Prefix</b> Meta event or the next MIDI event.</p>
+ 
+<p>It's use is particularly relevant in format 0 MIDI files, where
+multi-channel data is contained in the single MTrk chunk.  E.g. if you want
+to use <b>Instrument Name</b> Meta events then you can either include the
+MIDI channel (textually) within these events, or you could precede them
+with a <b>MIDI Channel Prefix</b> Meta event, so that it is clear
+which MIDI channel each <b>Instrument Name</b> event refers to.</p>
+
+<p>It is also useful when converting a MIDI file from format 0 to 1, and
+back again, as any association between non MIDI events and a particular
+MIDI channel can be retained.  E.g. in a format 1 MIDI file, where each
+track contains data for a single MIDI channel (that's not a neccessity,
+it's just a convention) there will be various SysEx and Meta events
+distributed amongst the various tracks and hence associated with the same
+MIDI channel as the MIDI events within each track.  Thus when converting
+to a format 0 MIDI file, the SysEx and Meta events from each track can be
+clustered together and preceded by an appropriate <b>MIDI Channel
+Prefix</b> event.  When converting back to a format 1 MIDI file, these
+clusters of SysEx and Meta events can be placed in separate tracks along
+with their associated MIDI events, thus restoring the original
+structure.</p>
+
+
+<h3>MIDI Port</h3>
+
+<p><tt class="hex">FF 21 01 pp</tt></p>
+
+<p><b>pp</b> is a byte specifying the MIDI port (0-127).</p>
+
+<p>Many systems provide a number of separately addressable MIDI ports in
+order to get around bandwidth issues and the 16 MIDI channel limit.  This
+optional event specifies the MIDI output port on which data within this
+MTrk chunk will be transmitted.</p>
+
+<p>Naturally, this event should be placed prior to any MIDI events that
+are to be affected.  Usually it would be placed at time=0 (i.e. at the start
+of a track), however it is possible to place more than one such event in
+any MTrk chunk, should you wish to output data through a different port
+later in the track.</p>
+
+
+<h3>End of Track</h3>
+
+<p><tt class="hex">FF 2F 00</tt></p>
+
+<p>This mandatory event must be the last event in each MTrk chunk, and
+that should be the only occurrence per track.  Note that there is no data
+field, hence length is 0.</p>
+
+
+<h3>Tempo</h3>
+
+<p><tt class="hex">FF 51 03 tt tt tt</tt></p>
+
+<p><b>tt tt tt</b> is a 24-bit value specifying the tempo as the number of
+microseconds per quarter note.</p>
+
+<p>Specifying tempos as <em>time per beat</em>, rather than the more usual
+(musically) <em>beat per time</em>, ensures precise long-term
+synchronisation with a time-based synchronisation protocol such as SMPTE
+or MIDI time code.</p>
+
+<p>Ideally, Tempo events should only occur where MIDI clocks would be
+located – a convention intended to maximise compatibility with other
+synchronisation devices, thus allowing easy transfer of time signature /
+tempo map information between devices.</p>
+
+<p>There should generally be a Tempo event at the beginning of a track (at
+time = 0), otherwise a default tempo of 120 bpm will be assumed. 
+Thereafter they can be used to effect an immediate tempo change at any
+point within a track.</p>
+
+<p>For a format 1 MIDI file, <b>Tempo</b> Meta events should only occur
+within the first MTrk chunk (i.e. the tempo track).</p>
+
+
+<h3>SMPTE Offset</h3>
+
+<p><tt class="hex">FF 54 05 hr mn se fr ff</tt></p>
+
+<b>hr</b> is a byte specifying the hour, which is also encoded with the SMPTE
+format (frame rate), just as it is in MIDI Time Code, i.e. <b><tt>0rrhhhhh</tt></b>,
+where :<br>
+<div class="soma-indent">
+<b>rr</b> = frame rate : 00 = 24 fps, 01 = 25 fps, 10 = 30 fps (drop frame),
+ 11 = 30 fps (non-drop frame)<br>
+<b>hhhhh</b> = hour (0-23)
+</div>
+
+<b>mn se</b> are 2 bytes specifying the minutes (0-59) and seconds (0-59),
+respectively.<br>
+
+<b>fr</b> is a byte specifying the number of frames (0-23/24/28/29, depending
+on the frame rate specified in the <b>hr</b> byte).<br>
+
+<b>ff</b> is a byte specifying the number of fractional frames, in 100ths
+of a frame (even in SMPTE-based tracks using a different frame
+subdivision, defined in the MThd chunk).
+
+<p>This optional event, if present, should occur at the start of a track,
+at time = 0, and prior to any MIDI events.  It is used to specify the
+SMPTE time at which the track is to start.</p>
+
+<p>For a format 1 MIDI file, a <b>SMPTE Offset</b> Meta event should only
+occur within the first MTrk chunk.</p>
+
+
+<h3>Time Signature</h3>
+
+<p><tt class="hex">FF 58 04 nn dd cc bb</tt></p>
+
+<p><b>nn</b> is a byte specifying the numerator of the time signature
+(as notated).<br>
+
+<b>dd</b> is a byte specifying the denominator of the time signature as a
+negative power of 2 (i.e. 2 represents a quarter-note, 3 represents an
+eighth-note, etc).<br>
+
+<b>cc</b> is a byte specifying the number of MIDI clocks between metronome
+clicks.<br>
+
+<b>bb</b> is a byte specifying the number of notated 32nd-notes in a MIDI
+quarter-note (24 MIDI Clocks).  The usual value for this parameter is 8,
+though some sequencers allow the user to specify that what MIDI thinks of
+as a quarter note, should be notated as something else.</p>
+
+<h4>Examples</h4>
+
+<div class="soma-indent">
+ <p>A time signature of 4/4, with a metronome
+ click every 1/4 note, would be encoded :<br>
+ <tt class="hex">FF 58 04 04 02 18 08</tt><br>
+ There are 24 MIDI Clocks per quarter-note, hence cc=24 (0x18).</p>
+
+ <p>A time signature of 6/8, with a metronome click every 3rd 1/8 note,
+ would be encoded :<br>
+ <tt class="hex">FF 58 04 06 03 24 08</tt><br>
+ Remember, a 1/4 note is 24 MIDI Clocks, therefore a bar of 6/8 is 72
+ MIDI Clocks.<br>Hence 3 1/8 notes is 36 (=0x24) MIDI Clocks.</p>
+</div>
+
+<p>There should generally be a <b>Time Signature</b> Meta event at the
+beginning of a track (at time = 0), otherwise a default 4/4 time signature
+will be assumed.  Thereafter they can be used to effect an immediate time
+signature change at any point within a track.</p>
+
+<p>For a format 1 MIDI file, <b>Time Signature</b> Meta events should only
+occur within the first MTrk chunk.</p>
+
+
+<h3>Key Signature</h3>
+
+<p><tt class="hex">FF 59 02 sf mi</tt></p>
+
+<p><b>sf</b> is a byte specifying the number of flats (-ve) or sharps
+(+ve) that identifies the key signature (-7 = 7 flats, -1 = 1 flat, 0
+= key of C, 1 = 1 sharp, etc).<br>
+
+<b>mi</b> is a byte specifying a major (0) or minor (1) key.</p>
+
+<p>For a format 1 MIDI file, <b>Key Signature</b> Meta events should only
+occur within the first MTrk chunk.</p>
+
+
+<h3>Sequencer Specific Event</h3>
+
+<p><tt class="hex">FF 7F length data</tt></p>
+
+<p>The first 1 or 3 bytes of <b>data</b> is a manufacturer's ID code (same
+format as for <a href="http://somascape.org/midi/tech/spec.html#sysexids">System Exclusive messages</a>).
+This optional event can be used to store sequencer-specific information.</p>
+
+</div><!-- close div.soma-section -->
+
+
+</div><!-- close div.soma-midi-doc -->
+
+
+<div class="soma-footer navbar-fixed-bottom">
+	<div class="container-fluid">
+	  <div class="soma-pageupdated">Page content last updated : Wed 22 Nov 2017</div>
+	</div>
+</div>
+
+
+
+
+
+</body></html>

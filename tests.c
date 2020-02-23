@@ -4,6 +4,7 @@
 
 #include "utils.h"
 #include "chunk_writer.h"
+#include "write_midi.h"
 
 void test_long_to_char_array()
 {
@@ -47,7 +48,7 @@ void test_curiosities()
     printf("BPM 200 = %d\n", get_bpm_in_milisecs(200));
 }
 
-void test_write_midi()
+int test_write_midi()
 {
     int tracks = 2;
     Chunk header;
@@ -76,6 +77,47 @@ void test_write_midi()
         ++i;
     }
 
+    Chunk music;
+    writeMusicTrack(&music);
+
+    i = 0;
+    end = music.size;
+
+    printf("MUSIC\n");
+    while (i < end)
+    {
+        printf("%02x\n", music.chunk_ptr[i]);
+        ++i;
+    }
+
+    unsigned char *midi_header = ARRAY_CONCAT(unsigned char,
+                                              header.chunk_ptr,
+                                              header.size,
+                                              tempo.chunk_ptr,
+                                              tempo.size);
+    unsigned char *le_midi = ARRAY_CONCAT(unsigned char,
+                                          midi_header,
+                                          header.size + tempo.size,
+                                          music.chunk_ptr,
+                                          music.size);
+
+    i = 0;
+    end = header.size + tempo.size + music.size;
+
+    printf("MIDI\n");
+    while (i < end)
+    {
+        printf("%02x\n", le_midi[i]);
+        ++i;
+    }
+
+    int result = write_midi("c43.mid", le_midi, header.size + tempo.size + music.size);
+
+    // mega clean-up effort to save the ocean!
+    free(midi_header);
+    free(le_midi);
     free(header.chunk_ptr);
     free(tempo.chunk_ptr);
+    free(music.chunk_ptr);
+    return result;
 }

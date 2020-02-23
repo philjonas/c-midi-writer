@@ -14,4 +14,6 @@ void writeHeaderTrack(Chunk *, unsigned int);
 
 void writeTempoTrack(Chunk *, unsigned int, unsigned int, unsigned int);
 
+void writeMusicTrack(Chunk *);
+
 #endif // CHUNK_WRITER
