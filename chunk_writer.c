@@ -68,6 +68,10 @@ void writeTempoTrack(Chunk *tempoTrk, unsigned int bpm,
     }
 
     tempoTrk->chunk_ptr = p;
+
+    free(ba);
+    free(mt);
+    free(et);
 }
 
 void writeMusicTrack(Chunk *musicTrk)
@@ -102,4 +106,7 @@ void writeMusicTrack(Chunk *musicTrk)
     }
 
     musicTrk->chunk_ptr = p;
+
+    free(mt);
+    free(et);
 }
