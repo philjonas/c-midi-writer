@@ -48,7 +48,7 @@ void test_curiosities()
     printf("BPM 200 = %d\n", get_bpm_in_milisecs(200));
 }
 
-int test_write_midi()
+void test_write_midi()
 {
     int tracks = 2;
     Chunk header;
@@ -111,7 +111,7 @@ int test_write_midi()
         ++i;
     }
 
-    int result = write_midi("c43.mid", le_midi, header.size + tempo.size + music.size);
+    write_midi("c43.mid", le_midi, header.size + tempo.size + music.size);
 
     // mega clean-up effort to save the ocean!
     free(midi_header);
@@ -119,5 +119,4 @@ int test_write_midi()
     free(header.chunk_ptr);
     free(tempo.chunk_ptr);
     free(music.chunk_ptr);
-    return result;
 }

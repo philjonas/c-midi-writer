@@ -84,13 +84,13 @@ void writeMusicTrack(Chunk *musicTrk)
         0x00, 0x91,                 // delta time = 0 // note on // channel 2
         0x3c, 0x40,                 // middle C // velocity 64
         0x78, 0x3c, 0x00,           // delta time // middle C // velocity 0 (or a note off)
-        0x78, 0x3c, 0x40,          // delta time // middle C // velocity 64
-        0x78, 0x3c, 0x00,          // delta time // middle C // velocity 0 (or a note off)
-        0x78, 0x3c, 0x40,          // delta time // middle C // velocity 64
-        0x78, 0x3c, 0x00,          // delta time // middle C // velocity 0 (or a note off)
-        0x78, 0x3c, 0x40,          // delta time // middle C // velocity 64
-        0x78, 0x3c, 0x00,          // delta time // middle C // velocity 0 (or a note off)
-        et[0], et[1], et[2], et[3] // End of track
+        0x78, 0x3c, 0x40,           // delta time // middle C // velocity 64
+        0x78, 0x3c, 0x00,           // delta time // middle C // velocity 0 (or a note off)
+        0x78, 0x3c, 0x40,           // delta time // middle C // velocity 64
+        0x78, 0x3c, 0x00,           // delta time // middle C // velocity 0 (or a note off)
+        0x78, 0x3c, 0x40,           // delta time // middle C // velocity 64
+        0x78, 0x3c, 0x00,           // delta time // middle C // velocity 0 (or a note off)
+        et[0], et[1], et[2], et[3]  // End of track
     };
 
     musicTrk->size = ARRAY_LENGTH(musicBytes);

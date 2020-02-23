@@ -5,8 +5,8 @@
 #include "utils.h"
 
 // example taken from http://www.rosettacode.org/wiki/Array_concatenation#C
-void *array_concat(const void *arrayA, size_t arrayA_size, 
-const void *arrayB, size_t arrayB_size, size_t sizeOfType)
+void *array_concat(const void *arrayA, size_t arrayA_size,
+                   const void *arrayB, size_t arrayB_size, size_t sizeOfType)
 {
     char *p = malloc(sizeOfType * (arrayA_size + arrayB_size));
     memcpy(p, arrayA, arrayA_size * sizeOfType);

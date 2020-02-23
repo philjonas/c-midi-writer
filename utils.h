@@ -14,8 +14,8 @@
 #define ARRAY_CONCAT(TYPE, A, An, B, Bn) \
     (TYPE *)array_concat((const void *)(A), (An), (const void *)(B), (Bn), sizeof(TYPE))
 
-#define BYTE_IN_BITS  8
-#define BYTE_MASK     0xff
+#define BYTE_IN_BITS 8
+#define BYTE_MASK 0xff
 #define SIXTY_MILLION 60000000
 
 void *array_concat(const void *, size_t, const void *, size_t, size_t);
