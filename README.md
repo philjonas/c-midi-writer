@@ -9,4 +9,3 @@ https://philjonas.github.io/c-midi-writer/
 
 ## TO DO:
 * automate repetitive parts
-* rewrite Python helpers in C

@@ -54,41 +54,11 @@ void test_write_midi()
     Chunk header;
     writeHeaderTrack(&header, tracks);
 
-    int i = 0;
-    int end = header.size;
-
-    printf("HEADER\n");
-    while (i < end)
-    {
-        printf("%02x\n", header.chunk_ptr[i]);
-        ++i;
-    }
-
     Chunk tempo;
     writeTempoTrack(&tempo, 120, 4, 2);
 
-    i = 0;
-    end = tempo.size;
-
-    printf("TEMPO\n");
-    while (i < end)
-    {
-        printf("%02x\n", tempo.chunk_ptr[i]);
-        ++i;
-    }
-
     Chunk music;
     writeMusicTrack(&music);
-
-    i = 0;
-    end = music.size;
-
-    printf("MUSIC\n");
-    while (i < end)
-    {
-        printf("%02x\n", music.chunk_ptr[i]);
-        ++i;
-    }
 
     unsigned char *midi_header = ARRAY_CONCAT(unsigned char,
                                               header.chunk_ptr,
@@ -101,17 +71,8 @@ void test_write_midi()
                                           music.chunk_ptr,
                                           music.size);
 
-    i = 0;
-    end = header.size + tempo.size + music.size;
-
-    printf("MIDI\n");
-    while (i < end)
-    {
-        printf("%02x\n", le_midi[i]);
-        ++i;
-    }
-
     write_midi("c43.mid", le_midi, header.size + tempo.size + music.size);
+    read_midi("c43.mid", header.size + tempo.size + music.size);
 
     // mega clean-up effort to save the ocean!
     free(midi_header);
