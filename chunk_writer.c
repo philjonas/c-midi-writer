@@ -53,7 +53,7 @@ void writeTempoTrack(Chunk *tempoTrk, unsigned int bpm,
         mt[0], mt[1], mt[2], mt[3], // Track header "MTrk"
         0x00, 0x00, 0x00, 0x13,     // Chunk length // 19 bytes until track end
         0x00, 0xFF, 0x58, 0x04,     // delta time // time signature event (4/4)
-        nBts, bTyp, 0x18, 0x08,     // 4 beats // 2 ** 2 = 4 // 24 MIDI clocks // 8 32nd notes in a quarter
+        nBts, bTyp, 0x18, 0x08,     // beats // beat Type // 24 MIDI clocks // 8 32nd notes in a quarter
         0x00, 0xFF, 0x51, 0x03,     // delta time // tempo event
         ba[0], ba[1], ba[2],        // bpm in miliseconds
         et[0], et[1], et[2], et[3]  // End of track
