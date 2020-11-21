@@ -9,3 +9,6 @@ https://philjonas.github.io/c-midi-writer/
 
 ## TO DO:
 * automate repetitive parts
+* on running the program save each scale as a separate MIDI file
+* all notes spaced apart equally
+* handle edge case "Melodic minor scale"

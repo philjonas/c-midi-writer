@@ -2,6 +2,7 @@
 #include "midi_example.h"
 #include "write_midi.h"
 #include "tests.h"
+#include "scales.h"
 
 int main()
 {

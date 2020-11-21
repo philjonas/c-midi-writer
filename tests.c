@@ -44,8 +44,8 @@ void test_curiosities()
     // slicing byte "23" out of "1234"
     printf("%x\n", (0x1234 >> 4) & 0xff);
 
-    printf("BPM 20 = %d\n", get_bpm_in_milisecs(20));
-    printf("BPM 200 = %d\n", get_bpm_in_milisecs(200));
+    printf("BPM 20 = %lu\n", get_bpm_in_milisecs(20));
+    printf("BPM 200 = %lu\n", get_bpm_in_milisecs(200));
 }
 
 void test_write_midi()
