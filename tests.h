@@ -8,6 +8,7 @@
 #include "utils.h"
 #include "chunk_writer.h"
 #include "write_midi.h"
+#include "scales.h"
 
 void test_array_concat();
 
@@ -18,5 +19,7 @@ void test_curiosities();
 void test_write_midi();
 
 void test_remove_blanks();
+
+void test_write_scales();
 
 #endif

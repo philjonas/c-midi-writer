@@ -42,6 +42,14 @@ void test_curiosities()
     printf("BPM 200 = %lu\n", get_bpm_in_milisecs(200));
 }
 
+void test_remove_blanks()
+{
+    char *original = "This Should Have No Blank Spaces";
+    char *noBlanks;
+    noBlanks = remove_blanks(original);
+    printf("%s\n", noBlanks);
+}
+
 void test_write_midi()
 {
     int tracks = 2;
@@ -52,15 +60,15 @@ void test_write_midi()
     writeTempoTrack(&tempo, 120, 4, 2);
 
     unsigned char musicBytes[] = {
-        0x00, 0x91,                 // delta time = 0 // note on // channel 2
-        0x3c, 0x40,                 // middle C // velocity 64
-        0x78, 0x3c, 0x00,           // delta time // middle C // velocity 0 (or a note off)
-        0x78, 0x3c, 0x40,           // delta time // middle C // velocity 64
-        0x78, 0x3c, 0x00,           // delta time // middle C // velocity 0 (or a note off)
-        0x78, 0x3c, 0x40,           // delta time // middle C // velocity 64
-        0x78, 0x3c, 0x00,           // delta time // middle C // velocity 0 (or a note off)
-        0x78, 0x3c, 0x40,           // delta time // middle C // velocity 64
-        0x78, 0x3c, 0x00,           // delta time // middle C // velocity 0 (or a note off)
+        0x00, 0x91,       // delta time = 0 // note on // channel 2
+        0x3c, 0x40,       // middle C // velocity 64
+        0x78, 0x3c, 0x00, // delta time // middle C // velocity 0 (or a note off)
+        0x78, 0x3c, 0x40, // delta time // middle C // velocity 64
+        0x78, 0x3c, 0x00, // delta time // middle C // velocity 0 (or a note off)
+        0x78, 0x3c, 0x40, // delta time // middle C // velocity 64
+        0x78, 0x3c, 0x00, // delta time // middle C // velocity 0 (or a note off)
+        0x78, 0x3c, 0x40, // delta time // middle C // velocity 64
+        0x78, 0x3c, 0x00, // delta time // middle C // velocity 0 (or a note off)
     };
 
     Chunk music;
@@ -88,10 +96,45 @@ void test_write_midi()
     free(music.chunk_ptr);
 }
 
-void test_remove_blanks()
+void test_write_scales()
 {
-    char *original = "This Should Have No Blank Spaces";
-    char *noBlanks;
-    noBlanks = remove_blanks(original);
-    printf("%s\n", noBlanks);
+    int tracks = 2;
+    Chunk header, tempo, music;
+    unsigned char *midi_header;
+    unsigned char *le_midi;
+    unsigned char *musicBytes;
+    unsigned int musicBytesLength;
+    char *scaleName;
+
+    for (unsigned int i = 0; i < NUMBER_OF_SCALES; i++)
+    {
+        writeHeaderTrack(&header, tracks);
+        writeTempoTrack(&tempo, 120, 4, 2);
+        musicBytes = scale_to_array(scales[i]);
+
+        musicBytesLength = scales[i].length * BYTES_PER_NOTE;
+        writeMusicTrack(&music, musicBytes, musicBytesLength);
+
+        midi_header = ARRAY_CONCAT(unsigned char,
+                                   header.chunk_ptr,
+                                   header.size,
+                                   tempo.chunk_ptr,
+                                   tempo.size);
+        le_midi = ARRAY_CONCAT(unsigned char,
+                               midi_header,
+                               header.size + tempo.size,
+                               music.chunk_ptr,
+                               music.size);
+
+        scaleName = remove_blanks(scales[i].name);
+        strcat(scaleName, ".mid");
+        write_midi(scaleName, le_midi, header.size + tempo.size + music.size);
+        read_midi(scaleName, header.size + tempo.size + music.size);
+
+        free(midi_header);
+        free(le_midi);
+        free(header.chunk_ptr);
+        free(tempo.chunk_ptr);
+        free(music.chunk_ptr);
+    }
 }
