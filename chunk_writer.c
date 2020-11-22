@@ -71,34 +71,38 @@ void writeTempoTrack(Chunk *tempoTrk, unsigned int bpm,
     free(et);
 }
 
-void writeExampleTrack(Chunk *musicTrk)
+void writeMusicTrack(Chunk *musicTrk, unsigned char *musicBytes, unsigned int musicBytesLength)
 {
-    // TODO: add inputs to this function, controlling notes or sth
-
     unsigned char *mt = long_to_char_array(MIDI_TRACK_START, 4);
     unsigned char *et = long_to_char_array(MIDI_TRACK_END, 4);
 
-    unsigned char musicBytes[] = {
+    unsigned char musicHeader[] = {
         mt[0], mt[1], mt[2], mt[3], // Track header "MTrk"
         0x00, 0x80, 0x00, 0x00,     // Chunk length // hacky way to avoid calculating track size
-        0x00, 0x91,                 // delta time = 0 // note on // channel 2
-        0x3c, 0x40,                 // middle C // velocity 64
-        0x78, 0x3c, 0x00,           // delta time // middle C // velocity 0 (or a note off)
-        0x78, 0x3c, 0x40,           // delta time // middle C // velocity 64
-        0x78, 0x3c, 0x00,           // delta time // middle C // velocity 0 (or a note off)
-        0x78, 0x3c, 0x40,           // delta time // middle C // velocity 64
-        0x78, 0x3c, 0x00,           // delta time // middle C // velocity 0 (or a note off)
-        0x78, 0x3c, 0x40,           // delta time // middle C // velocity 64
-        0x78, 0x3c, 0x00,           // delta time // middle C // velocity 0 (or a note off)
-        et[0], et[1], et[2], et[3]  // End of track
     };
 
-    musicTrk->size = ARRAY_LENGTH(musicBytes);
+    unsigned char *music_header_body = ARRAY_CONCAT(unsigned char,
+                                              musicHeader,
+                                              ARRAY_LENGTH(musicHeader),
+                                              musicBytes,
+                                              musicBytesLength);
+
+    unsigned char musicFooter[] = {
+        et[0], et[1], et[2], et[3] // End of track
+    };
+
+    unsigned char *whole_song = ARRAY_CONCAT(unsigned char,
+                                              music_header_body,
+                                              ARRAY_LENGTH(musicHeader) + musicBytesLength,
+                                              musicFooter,
+                                              ARRAY_LENGTH(musicFooter));
+
+    musicTrk->size = ARRAY_LENGTH(musicHeader) + musicBytesLength + ARRAY_LENGTH(musicFooter);
     unsigned char *p = malloc(sizeof(char) * musicTrk->size);
 
     for (int i = 0; i < musicTrk->size; i++)
     {
-        p[i] = musicBytes[i];
+        p[i] = whole_song[i];
     }
 
     musicTrk->chunk_ptr = p;

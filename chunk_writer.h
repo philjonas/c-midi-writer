@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include "utils.h"
 
+
 #define MIDI_TRACK_START 0x4d54726b
 #define MIDI_TRACK_END 0x00ff2f00
 
@@ -17,6 +18,6 @@ void writeHeaderTrack(Chunk *, unsigned int);
 
 void writeTempoTrack(Chunk *, unsigned int, unsigned int, unsigned int);
 
-void writeExampleTrack(Chunk *);
+void writeMusicTrack(Chunk *, unsigned char *, unsigned int);
 
 #endif // CHUNK_WRITER

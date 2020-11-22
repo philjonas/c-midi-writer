@@ -9,8 +9,8 @@ int main()
    // test_array_concat();
    // test_long_to_char_array();
    // test_curiosities();
-   // test_write_midi();
-    test_remove_blanks();
+   test_write_midi();
+   // test_remove_blanks();
 
    // writing and reading the example byte array
    // write_midi("c42.mid", MIDI_ANNOTATED_HEX, ARRAY_LENGTH(MIDI_ANNOTATED_HEX));

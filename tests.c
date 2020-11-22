@@ -51,8 +51,20 @@ void test_write_midi()
     Chunk tempo;
     writeTempoTrack(&tempo, 120, 4, 2);
 
+    unsigned char musicBytes[] = {
+        0x00, 0x91,                 // delta time = 0 // note on // channel 2
+        0x3c, 0x40,                 // middle C // velocity 64
+        0x78, 0x3c, 0x00,           // delta time // middle C // velocity 0 (or a note off)
+        0x78, 0x3c, 0x40,           // delta time // middle C // velocity 64
+        0x78, 0x3c, 0x00,           // delta time // middle C // velocity 0 (or a note off)
+        0x78, 0x3c, 0x40,           // delta time // middle C // velocity 64
+        0x78, 0x3c, 0x00,           // delta time // middle C // velocity 0 (or a note off)
+        0x78, 0x3c, 0x40,           // delta time // middle C // velocity 64
+        0x78, 0x3c, 0x00,           // delta time // middle C // velocity 0 (or a note off)
+    };
+
     Chunk music;
-    writeExampleTrack(&music);
+    writeMusicTrack(&music, musicBytes, ARRAY_LENGTH(musicBytes));
 
     unsigned char *midi_header = ARRAY_CONCAT(unsigned char,
                                               header.chunk_ptr,
