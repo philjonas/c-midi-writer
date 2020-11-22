@@ -75,3 +75,11 @@ void test_write_midi()
     free(tempo.chunk_ptr);
     free(music.chunk_ptr);
 }
+
+void test_remove_blanks()
+{
+    char *original = "This Should Have No Blank Spaces";
+    char *noBlanks;
+    noBlanks = remove_blanks(original);
+    printf("%s\n", noBlanks);
+}

@@ -17,4 +17,6 @@ void test_curiosities();
 
 void test_write_midi();
 
+void test_remove_blanks();
+
 #endif

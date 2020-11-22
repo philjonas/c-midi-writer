@@ -27,4 +27,6 @@ void *long_to_char_array(unsigned long int, unsigned int);
 
 unsigned long int get_bpm_in_milisecs(unsigned int);
 
+char* remove_blanks(char*);
+
 #endif // UTILS_PHIL

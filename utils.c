@@ -24,3 +24,20 @@ unsigned long int get_bpm_in_milisecs(unsigned int bpm)
 {
     return SIXTY_MILLION / bpm;
 }
+
+char* remove_blanks(char *text)
+{
+    static char blank[100];
+    int c = 0, d = 0;
+
+    while (text[c] != '\0')
+    {
+        if (text[c] != ' ')
+        {
+            blank[d] = text[c];
+            d++;
+        }
+        c++;
+    }
+    return blank;
+}
