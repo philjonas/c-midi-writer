@@ -22,6 +22,6 @@ static const Scale scales[NUMBER_OF_SCALES] =
     {"Acoustic scale", 8, {0,2,4,6,7,9,10,12}},
 };
 
-unsigned char* scaleToArray(Scale);
+unsigned char* scale_to_array(Scale);
 
 #endif // SCALES_PHIL

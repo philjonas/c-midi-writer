@@ -1,6 +1,6 @@
 #include "scales.h"
 
-unsigned char *scaleToArray(Scale scale)
+unsigned char *scale_to_array(Scale scale)
 {
     static unsigned char payload[MAX_NUMBER_OF_BYTES];
     for (unsigned int i = 0; i < scale.length; i++)
