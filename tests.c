@@ -1,10 +1,4 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-
-#include "utils.h"
-#include "chunk_writer.h"
-#include "write_midi.h"
+#include "tests.h"
 
 void test_long_to_char_array()
 {

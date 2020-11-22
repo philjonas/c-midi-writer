@@ -1,7 +1,3 @@
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "write_midi.h"
 
 void write_midi(const char *filename, const unsigned char hex_array[], size_t midi_length)

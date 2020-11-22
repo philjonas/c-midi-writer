@@ -1,7 +1,4 @@
-#include <stdlib.h>
-
 #include "chunk_writer.h"
-#include "utils.h"
 
 void writeHeaderTrack(Chunk *header, unsigned int numberOfTracks)
 {
@@ -82,7 +79,6 @@ void writeMusicTrack(Chunk *musicTrk)
     unsigned char *et = long_to_char_array(MIDI_TRACK_END, 4);
 
     unsigned char musicBytes[] = {
-        /* Tempo track */
         mt[0], mt[1], mt[2], mt[3], // Track header "MTrk"
         0x00, 0x80, 0x00, 0x00,     // Chunk length // hacky way to avoid calculating track size
         0x00, 0x91,                 // delta time = 0 // note on // channel 2
