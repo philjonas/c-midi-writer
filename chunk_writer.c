@@ -71,7 +71,7 @@ void writeTempoTrack(Chunk *tempoTrk, unsigned int bpm,
     free(et);
 }
 
-void writeMusicTrack(Chunk *musicTrk)
+void writeExampleTrack(Chunk *musicTrk)
 {
     // TODO: add inputs to this function, controlling notes or sth
 

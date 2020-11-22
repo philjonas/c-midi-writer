@@ -6,7 +6,6 @@
 
 #define MIDI_TRACK_START 0x4d54726b
 #define MIDI_TRACK_END 0x00ff2f00
-#define MIDDLE_C 0x3c
 
 typedef struct
 {
@@ -18,6 +17,6 @@ void writeHeaderTrack(Chunk *, unsigned int);
 
 void writeTempoTrack(Chunk *, unsigned int, unsigned int, unsigned int);
 
-void writeMusicTrack(Chunk *);
+void writeExampleTrack(Chunk *);
 
 #endif // CHUNK_WRITER

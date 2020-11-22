@@ -52,7 +52,7 @@ void test_write_midi()
     writeTempoTrack(&tempo, 120, 4, 2);
 
     Chunk music;
-    writeMusicTrack(&music);
+    writeExampleTrack(&music);
 
     unsigned char *midi_header = ARRAY_CONCAT(unsigned char,
                                               header.chunk_ptr,

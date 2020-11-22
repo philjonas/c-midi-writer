@@ -1,33 +1,33 @@
 #include "scales.h"
 
-void writeAllScales(){
-    int tracks = 2;
-    Chunk header;
-    writeHeaderTrack(&header, tracks);
+unsigned char *scaleToArray(Scale scale)
+{
+    static unsigned char payload[MAX_NUMBER_OF_BYTES];
+    for (unsigned int i = 0; i < scale.length; i++)
+    {
+        for (unsigned int j = 0; j < 6; j++)
+        {
+            switch (j % 6)
+            {
+            case 0:
+            case 3:
+                payload[i] = QUARTER_NOTE;
+                break;
+            case 1:
+            case 4:
+                payload[i] = MIDDLE_C + scale.notes[i];
+                break;
+            case 2:
+                payload[i] = VELOCITY_ON;
+                break;
+            case 5:
+                payload[i] = VELOCITY_OFF;
+                break;
+            default:
+                break;
+            }
+        }
+    }
 
-    Chunk tempo;
-    writeTempoTrack(&tempo, 120, 4, 2);
-
-    Chunk music;
-    writeMusicTrack(&music);
-
-    unsigned char *midi_header = ARRAY_CONCAT(unsigned char,
-                                              header.chunk_ptr,
-                                              header.size,
-                                              tempo.chunk_ptr,
-                                              tempo.size);
-    unsigned char *le_midi = ARRAY_CONCAT(unsigned char,
-                                          midi_header,
-                                          header.size + tempo.size,
-                                          music.chunk_ptr,
-                                          music.size);
-
-    write_midi("scales.mid", le_midi, header.size + tempo.size + music.size);
-    read_midi("scales.mid", header.size + tempo.size + music.size);
-
-    free(midi_header);
-    free(le_midi);
-    free(header.chunk_ptr);
-    free(tempo.chunk_ptr);
-    free(music.chunk_ptr);
+    return payload;
 }

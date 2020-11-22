@@ -39,6 +39,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="midi_example.h" />
+		<Unit filename="scales.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="scales.h" />
 		<Unit filename="tests.c">
 			<Option compilerVar="CC" />
