@@ -104,7 +104,6 @@ void test_write_scales()
     unsigned char *le_midi;
     unsigned char *musicBytes;
     unsigned int musicBytesLength;
-    char *scaleName;
 
     for (unsigned int i = 0; i < NUMBER_OF_SCALES; i++)
     {
@@ -126,7 +125,8 @@ void test_write_scales()
                                music.chunk_ptr,
                                music.size);
 
-        scaleName = remove_blanks(scales[i].name);
+
+        char *scaleName = remove_blanks(scales[i].name);
         strcat(scaleName, ".mid");
         write_midi(scaleName, le_midi, header.size + tempo.size + music.size);
         read_midi(scaleName, header.size + tempo.size + music.size);

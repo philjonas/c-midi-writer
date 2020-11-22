@@ -39,5 +39,6 @@ char* remove_blanks(char *text)
         }
         c++;
     }
+    blank[d] = '\0';
     return blank;
 }
