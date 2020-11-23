@@ -7,8 +7,6 @@ unsigned char *scale_to_array(Scale scale)
     {
         for (unsigned int j = 0; j < BYTES_PER_NOTE; j++)
         {
-            // 0x78, 0x91, 0x3c, 0x40,
-            // 0x78, 0x81, 0x3c, 0x40
             int payloadIndex = i * BYTES_PER_NOTE + j;
             switch (j % BYTES_PER_NOTE)
             {
@@ -30,7 +28,6 @@ unsigned char *scale_to_array(Scale scale)
                 payload[payloadIndex] = VELOCITY_64;
                 break;
             }
-            // printf("%02X\n", ch);
         }
     }
 
